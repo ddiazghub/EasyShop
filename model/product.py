@@ -1,6 +1,7 @@
 from __future__ import annotations
 from pydantic import BaseModel
 from enum import IntEnum
+from datetime import datetime
 
 class Category(IntEnum):
     Electronics = 1
@@ -31,6 +32,7 @@ class Product(BaseModel):
     total_purchases: int
     supplier_id: int
     category: Category
+    created_at: datetime
 
     @staticmethod
     def parse(result: tuple) -> Product:
@@ -43,7 +45,8 @@ class Product(BaseModel):
             total_purchases=result[5],
             unit_price=result[6],
             supplier_id=result[7],
-            category=Category(result[8])
+            category=Category(result[8]),
+            created_at=result[9]
         )
     
 class StockModification(BaseModel):

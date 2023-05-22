@@ -12,7 +12,7 @@ class OrderStateUpdate(BaseModel):
     order_id: int
     original_state: OrderState
     new_state: OrderState
-    update_timestamp: datetime
+    updated_at: datetime
 
 class ProductOrder(BaseModel):
     product_id: int

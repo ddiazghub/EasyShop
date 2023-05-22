@@ -27,7 +27,8 @@ CREATE TABLE "Product" (
     total_purchases BIGINT NOT NULL DEFAULT 0,
     unit_price DOUBLE PRECISION NOT NULL,
     supplier_id INT NOT NULL REFERENCES "ClientUser"(client_id),
-    category_id INT NOT NULL REFERENCES "Category"(category_id)
+    category_id INT NOT NULL REFERENCES "Category"(category_id),
+    created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE "OrderState" (
@@ -48,7 +49,7 @@ CREATE TABLE "OrderStateUpdate" (
     order_id SERIAL PRIMARY KEY,
     original_state_id INT NOT NULL REFERENCES "OrderState"(state_id),
     new_state_id INT NOT NULL REFERENCES "OrderState"(state_id),
-    update_timestamp TIMESTAMP NOT NULL
+    updated_at TIMESTAMP NOT NULL
 );
 
 CREATE TABLE "ProductOrder" (
@@ -58,5 +59,5 @@ CREATE TABLE "ProductOrder" (
 );
 
 INSERT INTO "ClientUser"(client_id, client_name, email, phone_number, billing_address) VALUES ('0', 'None', 'None', 'None', 'None');
-INSERT INTO "Category"(category_name)VALUES ('Electronics');
+INSERT INTO "Category" (category_name)VALUES ('Electronics');
 INSERT INTO "OrderState"(state_name) VALUES ('Confirmed'), ('Dispatched'), ('Delivered'), ('Canceled');
