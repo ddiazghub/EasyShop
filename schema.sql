@@ -40,7 +40,7 @@ CREATE TABLE "Order" (
     order_id SERIAL PRIMARY KEY,
     client_id INT NOT NULL REFERENCES "ClientUser"(client_id),
     total_cost DOUBLE PRECISION NOT NULL,
-    purchase_date DATE NOT NULL,
+    purchase_date DATE NOT NULL DEFAULT CURRENT_DATE,
     delivery_date DATE NOT NULL,
     state_id INT NOT NULL REFERENCES "OrderState"(state_id)
 );
@@ -49,7 +49,7 @@ CREATE TABLE "OrderStateUpdate" (
     order_id SERIAL PRIMARY KEY,
     original_state_id INT NOT NULL REFERENCES "OrderState"(state_id),
     new_state_id INT NOT NULL REFERENCES "OrderState"(state_id),
-    updated_at TIMESTAMP NOT NULL
+    updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE "ProductOrder" (
