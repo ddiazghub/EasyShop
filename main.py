@@ -4,7 +4,7 @@ from fastapi.params import Query
 from contextlib import asynccontextmanager
 from db.create_db import create_database
 from docs import API_DESCRIPTION
-from controllers import user_controller, product_controller
+from controllers import user_controller, product_controller, order_controller
 
 import logging
 
@@ -22,8 +22,10 @@ app = FastAPI(
 )
 
 log = logging.getLogger(__name__)
+
 app.include_router(user_controller.router)
 app.include_router(product_controller.router)
+app.include_router(order_controller.router)
 
 """
 @app.get("/accidents", tags=["accidents"])

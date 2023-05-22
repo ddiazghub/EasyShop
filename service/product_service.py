@@ -11,7 +11,7 @@ def get_all() -> list[Product]:
 
 def get_by_id(product_id: int) -> Product:
     def product_get(cursor: Cursor) -> Product:
-        record = cursor.execute("SELECT * FROM \"Product\" WHERE product_id = %s", (product_id,)).fetchone()
+        record = cursor.execute("SELECT * FROM \"Product\" WHERE product_id = %s", [product_id]).fetchone()
 
         return Product.parse(record)
     
@@ -19,13 +19,13 @@ def get_by_id(product_id: int) -> Product:
 
 def get_by_supplier(supplier_id: int) -> list[Product]:
     def product_get(cursor: Cursor) -> list[Product]:
-        return [Product.parse(record) for record in cursor.execute("SELECT * FROM \"Product\" WHERE supplier_id = %s ORDER BY total_purchases DESC, created_at DESC", (supplier_id,))]
+        return [Product.parse(record) for record in cursor.execute("SELECT * FROM \"Product\" WHERE supplier_id = %s ORDER BY total_purchases DESC, created_at DESC", [supplier_id])]
     
     return database.transaction(product_get)
 
 def get_by_category(category: Category) -> list[Product]:
     def product_get(cursor: Cursor) -> list[Product]:
-        return [Product.parse(record) for record in cursor.execute("SELECT * FROM \"Product\" WHERE category_id = %s ORDER BY total_purchases DESC, created_at DESC", (int(category),))]
+        return [Product.parse(record) for record in cursor.execute("SELECT * FROM \"Product\" WHERE category_id = %s ORDER BY total_purchases DESC, created_at DESC", [int(category)])]
     
     return database.transaction(product_get)
 

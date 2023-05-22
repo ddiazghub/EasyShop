@@ -14,5 +14,9 @@ API_TAGS = [
     {
         "name": "users",
         "description": "Users and clients management. Includes both CRUD operations and authentication/authorization."
+    },
+    {
+        "name": "orders",
+        "description": "Order related CRUD operations."
     }
 ]
