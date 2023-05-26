@@ -879,7 +879,10 @@ textarea.description-input {
 }
 
 .product .product-img {
+  display: flex;
   position: relative;
+  height: 215px;
+  align-items: center;
 }
 
 .product .product-img>img {

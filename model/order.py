@@ -31,6 +31,7 @@ class OrderCreation(BaseModel):
     client_id: int
     supplier_id: int
     products: list[ProductOrder]
+    order_notes: str
 
 class StateModification(BaseModel):
     order_id: int
@@ -41,6 +42,7 @@ class Order(BaseModel):
     client_id: int
     supplier_id: int
     total_cost: float
+    order_notes: str
     purchase_date: date
     delivery_date: date
     state: OrderState
@@ -51,7 +53,8 @@ class Order(BaseModel):
             client_id=result[1],
             supplier_id=result[2],
             total_cost=result[3],
-            purchase_date=result[4],
-            delivery_date=result[5],
-            state=OrderState(result[6])
+            order_notes=result[4],
+            purchase_date=result[5],
+            delivery_date=result[6],
+            state=OrderState(result[7])
         )

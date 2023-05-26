@@ -21,19 +21,9 @@ class Cart {
             document.getElementById(`product-${product.product_id}-amount`).innerText = `${amount}x`;
         }
         else {
-            this.cart.set(product.product_id, { product, amount });
-            cartList.innerHTML += `
-                <div class="product-widget">
-                    <div class="product-img">
-                        <img src="${product.image_url}" alt="">
-                    </div>
-                    <div class="product-body">
-                        <h3 class="product-name"><a href="/product?product_id=${product.product_id}">${product.name}</a></h3>
-                        <h4 class="product-price"><span class="qty" id="product-${product.product_id}-amount">${amount}x</span>$${product.unit_price}</h4>
-                    </div>
-                    <button class="delete"><i class="fa fa-close"></i></button>
-                </div>
-            `;
+            const entry = { product, amount };
+            this.cart.set(product.product_id, entry);
+            cartList.innerHTML += Cart.renderProduct(entry);
         }
         this.subtotal += product.unit_price * amount;
         subtotalSpan.innerText = this.subtotal.toString();
@@ -42,6 +32,9 @@ class Cart {
     }
     contains(productId) {
         return this.cart.has(productId);
+    }
+    isEmpty() {
+        return this.cart.size === 0;
     }
     remove(productId) {
         const entry = this.cart.get(productId);
@@ -60,20 +53,23 @@ class Cart {
     }
     render() {
         cartList.innerHTML = "";
-        for (const { amount, product } of this.cart.values()) {
-            cartList.innerHTML += `
-                <div class="product-widget">
-                    <div class="product-img">
-                        <img src="${product.image_url}" alt="">
-                    </div>
-                    <div class="product-body">
-                        <h3 class="product-name"><a href="/product?product_id=${product.product_id}">${product.name}</a></h3>
-                        <h4 class="product-price"><span class="qty" id="product-${product.product_id}-amount">${amount}x</span>$${product.unit_price}</h4>
-                    </div>
-                    <button class="delete"><i class="fa fa-close"></i></button>
-                </div>
-            `;
+        for (const entry of this.cart.values()) {
+            cartList.innerHTML += Cart.renderProduct(entry);
         }
+    }
+    static renderProduct({ product, amount }) {
+        return `
+            <div class="product-widget">
+                <div class="product-img">
+                    <img src="${product.image_url}" alt="">
+                </div>
+                <div class="product-body">
+                    <h3 class="product-name"><a href="/product?product_id=${product.product_id}">${product.name}</a></h3>
+                    <h4 class="product-price"><span class="qty" id="product-${product.product_id}-amount">${amount}x</span>$${product.unit_price}</h4>
+                </div>
+                <button class="delete" onclick="Cart.get().remove(${product.product_id})"><i class="fa fa-close"></i></button>
+            </div>
+        `;
     }
     static load() {
         const cartJson = window.localStorage.getItem("cart") ?? "[]";
@@ -82,9 +78,9 @@ class Cart {
         return new Cart(cart);
     }
     static get() {
-        if (!this.instance)
-            this.instance = Cart.load();
-        return this.instance;
+        if (!Cart.instance)
+            Cart.instance = Cart.load();
+        return Cart.instance;
     }
 }
 window.addEventListener("DOMContentLoaded", Cart.get);

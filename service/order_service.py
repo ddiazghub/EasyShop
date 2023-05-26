@@ -49,13 +49,13 @@ def create(order: OrderCreation) -> Order:
 
     def order_create(cursor: Cursor) -> Order:
         query = """
-        INSERT INTO \"Order\" (client_id, supplier_id)
-        VALUES (%s, %s)
+        INSERT INTO \"Order\" (client_id, supplier_id, order_notes)
+        VALUES (%s, %s, %s)
         RETURNING order_id
         """
 
         global order_id
-        order_id = cursor.execute(query, (order.client_id, order.supplier_id)).fetchone()[0]
+        order_id = cursor.execute(query, (order.client_id, order.supplier_id, order.order_notes)).fetchone()[0]
         
         query = """
         INSERT INTO \"ProductOrder\" (product_id, order_id, amount)
@@ -67,7 +67,7 @@ def create(order: OrderCreation) -> Order:
         query = """
         UPDATE "Order"
         SET total_cost = (
-            SELECT p.unit_price * o.amount
+            SELECT SUM(p.unit_price * o.amount)
             FROM "ProductOrder" AS o
             JOIN "Product" AS p ON p.product_id = o.product_id
             WHERE order_id = %s
@@ -99,7 +99,7 @@ def modify_state(order_id: int, new_state: OrderState) -> Order:
         UPDATE "Order"
         SET state_id = %s
         WHERE order_id = %s
-        RETURNING order_id, client_id, supplier_id, total_cost, purchase_date, delivery_date, state_id
+        RETURNING order_id, client_id, supplier_id, total_cost, order_notes, purchase_date, delivery_date, state_id
         """
 
         modified_order = cursor.execute(query, (int(new_state), order_id)).fetchone()

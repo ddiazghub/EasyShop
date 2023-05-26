@@ -1,6 +1,6 @@
 from __future__ import annotations
 from pydantic import BaseModel
-from enum import IntEnum, StrEnum
+from enum import IntEnum, Enum
 from datetime import datetime
 
 class Category(IntEnum):
@@ -19,7 +19,7 @@ class Category(IntEnum):
     School = 13
     Art = 14
 
-class SortBy(StrEnum):
+class SortBy(Enum):
     Popularity = "popularity"
     Stock = "stock"
     Price = "price"

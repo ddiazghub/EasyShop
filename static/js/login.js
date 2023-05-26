@@ -84,11 +84,11 @@ class Session {
         return this.session?.token ?? null;
     }
     static get() {
-        if (!this.instance) {
-            this.instance = new Session();
-            this.instance.load();
+        if (!Session.instance) {
+            Session.instance = new Session();
+            Session.instance.load();
         }
-        return this.instance;
+        return Session.instance;
     }
 }
 window.addEventListener("DOMContentLoaded", Session.get);

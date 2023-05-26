@@ -1,4 +1,5 @@
 import bcrypt
+
 from model.error import NOT_FOUND, USERNAME_EXISTS, UNAUTHORIZED
 from model.user import Client, ClientModification, User, UserCreation, Credentials
 from db import database
@@ -7,8 +8,8 @@ from psycopg.errors import UniqueViolation
 from fastapi import HTTPException
 from config import JWT_ALGORITHM, SECRET_KEY
 from model.auth import Token, TokenPayload, UserWithToken
-from datetime import timedelta
-from jose import ExpiredSignatureError, JWTError, jwt
+from datetime import timedelta, timezone
+from jose import jwt
 
 BASE_QUERY = """
 SELECT u.user_id, u.username, u.client_id, c.client_name, c.email, c.phone_number, c.billing_address
@@ -152,10 +153,10 @@ def delete(user_id: int) -> None:
 
 def create_token(payload: TokenPayload) -> Token:
     data = payload.copy()
-    data.exp += timedelta(hours=1)
+    data.exp += timedelta(days=1)
     token = jwt.encode(data.dict(), SECRET_KEY, algorithm=JWT_ALGORITHM)
 
-    return Token(access_token=token, token_type="bearer", expires=data.exp)
+    return Token(access_token=token, token_type="bearer", expires=data.exp.astimezone(timezone.utc))
 
 def login(credentials: Credentials) -> UserWithToken:
     try:
@@ -172,10 +173,7 @@ def login(credentials: Credentials) -> UserWithToken:
         raise UNAUTHORIZED
 
 def authorize(authorization: str) -> TokenPayload:
-    try:
-        token = authorization.split(" ")[1]
-        payload = TokenPayload(**jwt.decode(token, SECRET_KEY, algorithms=[JWT_ALGORITHM]))
+    token = authorization.split(" ")[1]
+    payload = TokenPayload(**jwt.decode(token, SECRET_KEY, algorithms=[JWT_ALGORITHM]))
 
-        return payload
-    except JWTError | ExpiredSignatureError:
-        raise UNAUTHORIZED
+    return payload

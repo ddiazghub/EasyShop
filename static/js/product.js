@@ -21,6 +21,7 @@ function addToCart() {
         return;
     Cart.get().add(product, amount);
     const showModal = document.getElementById("show-modal-btn");
+    reduceMax(amount);
     showModal.click();
 }
 function reduceMax(amount) {

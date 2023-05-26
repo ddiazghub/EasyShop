@@ -21,4 +21,5 @@ async function createProduct() {
     console.log("Uploading product: ", product);
     const response = await Api.post("/api/product", product);
     console.log("Product uploaded: ", response);
+    alert("Product created.");
 }

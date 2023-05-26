@@ -29,6 +29,7 @@ function addToCart() {
     
     Cart.get().add(product, amount);
     const showModal = document.getElementById("show-modal-btn")! as HTMLButtonElement;
+    reduceMax(amount);
     showModal.click();
 }
 

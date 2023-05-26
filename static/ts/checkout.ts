@@ -1,3 +1,55 @@
+const orderProductsContainer = document.getElementById("order-products-container")! as HTMLDivElement;
+const orderTotalSpan = document.getElementById("order-total")! as HTMLSpanElement;
+const orderNotesArea = document.getElementById("order-notes-area")! as HTMLTextAreaElement;
+document.getElementById("checkout-button")!.addEventListener("click", () => checkout());
+
+window.addEventListener("DOMContentLoaded", () => {
+    const cart = Cart.get();
+    
+    if (cart.isEmpty())
+        history.back();
+    
+    const user = Session.get().getUser();
+    document.getElementById("client-details")!.innerHTML = user ? userDetails(user) : unregistered();
+    orderProductsContainer.innerHTML = "";
+    orderTotalSpan.innerText = cart.subtotal.toString();
+
+    for (const { amount, product } of cart.cart.values()) {
+        orderProductsContainer.innerHTML += `
+            <div class="order-col">
+                <div>${amount}x ${product.name}</div>
+                <div>$${product.unit_price}</div>
+            </div>
+        `;
+    }
+});
+
+async function checkout() {
+    const session = Session.get();
+    let user = session.getUser();
+    const cart = [...Cart.get().cart.values()];
+    
+    if (!user) {
+        await session.register(false);
+        user = session.getUser()!;
+    }
+
+    const order: OrderCreation = {
+        client_id: user.client_data.client_id,
+        supplier_id: cart[0].product.supplier_id,
+        order_notes: orderNotesArea.value,
+        products: cart.map(entry => ({
+            product_id: entry.product.product_id,
+            amount: entry.amount
+        }))
+    };
+
+    console.log("Sending order to server: ", order);
+    const response: Order = await Api.post("/api/order", order);
+    console.log("Created order: ", response);
+    alert("Order created");
+}
+
 function unregistered(): string {
     return `
     <!-- Billing Details -->
@@ -115,20 +167,3 @@ function userDetails(user: User): string {
     <!-- Billing Details -->
     `;
 }
-
-async function checkout() {
-    const session = Session.get();
-    let user = session.getUser();
-
-    if (!user) {
-        await session.register(false);
-        user = session.getUser();
-    }
-}
-
-window.addEventListener("DOMContentLoaded", () => {
-    const user = Session.get().getUser();
-    document.getElementById("client-details")!.innerHTML = user ? userDetails(user) : unregistered();
-})
-
-document.getElementById("checkout-button")!.addEventListener("click", checkout);

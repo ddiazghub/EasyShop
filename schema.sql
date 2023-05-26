@@ -41,6 +41,7 @@ CREATE TABLE "Order" (
     client_id INT NOT NULL REFERENCES "ClientUser"(client_id),
     supplier_id INT NOT NULL REFERENCES "ClientUser"(client_id),
     total_cost DOUBLE PRECISION NOT NULL DEFAULT 0 CHECK (total_cost > -1),
+    order_notes VARCHAR(300) NOT NULL DEFAULT '',
     purchase_date DATE NOT NULL DEFAULT CURRENT_DATE,
     delivery_date DATE NOT NULL DEFAULT CURRENT_DATE + 5,
     state_id INT NOT NULL REFERENCES "OrderState"(state_id) DEFAULT 1
