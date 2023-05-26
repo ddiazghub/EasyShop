@@ -1,10 +1,10 @@
-from typing import Annotated
 from fastapi import FastAPI
-from fastapi.params import Query
+from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
 from db.create_db import create_database
 from docs import API_DESCRIPTION
-from controllers import user_controller, product_controller, order_controller
+from controllers.api_controller import router as api
+from controllers.client_controller import router as client
 
 import logging
 
@@ -23,9 +23,9 @@ app = FastAPI(
 
 log = logging.getLogger(__name__)
 
-app.include_router(user_controller.router)
-app.include_router(product_controller.router)
-app.include_router(order_controller.router)
+app.include_router(api)
+app.include_router(client)
+app.mount("/", StaticFiles(directory="static", html=True), name="static")
 
 """
 @app.get("/accidents", tags=["accidents"])

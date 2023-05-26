@@ -3,6 +3,8 @@ from psycopg import Cursor
 import db.database as database
 import logging
 
+from model.product import Category
+
 log = logging.getLogger(__name__)
 
 def create_database() -> None:
@@ -24,6 +26,10 @@ def create_database() -> None:
 
             with open("schema.sql") as schema:
                 cursor.execute(schema.read())
+
+            with cursor.copy("COPY \"Category\" (category_name) FROM STDIN") as copy:
+                for variant in Category:
+                    copy.write_row([variant.name]);
     
     database.transaction(create_schema)
 

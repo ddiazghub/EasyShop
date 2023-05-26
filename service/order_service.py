@@ -1,5 +1,7 @@
+from model.error import NOT_FOUND, INSUFFICIENT_STOCK
 from model.order import Order, OrderCreation, OrderState, StateUpdate
 from psycopg import Cursor
+from psycopg.errors import CheckViolation
 from db import database
 from typing import Sequence
 
@@ -23,6 +25,9 @@ def get_by_id(order_id: int) -> Order:
     def order_get(cursor: Cursor) -> Order:
         record = cursor.execute("SELECT * FROM \"Order\" WHERE order_id = %s", [order_id]).fetchone()
 
+        if not record:
+            raise NOT_FOUND
+        
         return Order.parse(record)
     
     return database.transaction(order_get)
@@ -51,7 +56,7 @@ def create(order: OrderCreation) -> Order:
 
         global order_id
         order_id = cursor.execute(query, (order.client_id, order.supplier_id)).fetchone()[0]
-        print(order_id)
+        
         query = """
         INSERT INTO \"ProductOrder\" (product_id, order_id, amount)
         VALUES (%s, %s, %s)
@@ -79,12 +84,14 @@ def create(order: OrderCreation) -> Order:
         WHERE product_id = %s
         """
         
-        cursor.executemany(query, [(product.amount, product.amount, product.product_id) for product in order.products])
+        try:
+            cursor.executemany(query, [(product.amount, product.amount, product.product_id) for product in order.products])
+        except CheckViolation:
+            raise INSUFFICIENT_STOCK
     
     database.transaction(order_create)
 
     return get_by_id(order_id)
-
 
 def modify_state(order_id: int, new_state: OrderState) -> Order:
     def order_state(cursor: Cursor) -> Order:
@@ -96,6 +103,9 @@ def modify_state(order_id: int, new_state: OrderState) -> Order:
         """
 
         modified_order = cursor.execute(query, (int(new_state), order_id)).fetchone()
+        
+        if not modified_order:
+            raise NOT_FOUND
         
         return Order.parse(modified_order)
     

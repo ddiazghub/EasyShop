@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Response
-from model.user import Client, ClientModification, PasswordModification, User, UserCreation
+from model.auth import UserWithToken
+from model.user import Client, ClientModification, PasswordUpdate, User, UserCreation, Credentials
 from service import user_service
 
 router = APIRouter(
@@ -12,7 +13,7 @@ router = APIRouter(
     }
 )
 
-@router.get("/")
+@router.get("")
 async def get_all_users() -> list[User]:
     return user_service.get_all()
 
@@ -24,17 +25,23 @@ async def get_by_id(user_id: int) -> User:
 async def get_by_client_id(client_id: int) -> User:
     return user_service.get_by_client_id(client_id)
 
-@router.post("/")
-async def create_user(user: UserCreation) -> User:
+@router.post("")
+async def create_user(user: UserCreation) -> UserWithToken:
     return user_service.create(user)
 
-@router.put("/")
+@router.post("/login")
+async def user_login(credentials: Credentials) -> UserWithToken:
+    return user_service.login(credentials)
+
+@router.put("")
 async def modify_client_data(modification: ClientModification) -> Client:
     return user_service.modify(modification)
 
 @router.patch("/password")
-async def change_password(modification: PasswordModification) -> Response:
-    user_service.change_password(modification.user_id, modification.password)
+#async def change_password(authorization: Annotated[str, Header()], password: str) -> Response:
+async def change_password(authorization: str, password: PasswordUpdate) -> Response:
+    payload = user_service.authorize(authorization)
+    user_service.change_password(payload.user_id, password.password)
 
     return Response(status_code=204)
 

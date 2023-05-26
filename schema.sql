@@ -1,7 +1,7 @@
 CREATE TABLE "ClientUser" (
     client_id SERIAL PRIMARY KEY,
     client_name VARCHAR(50) NOT NULL,
-    email VARCHAR(100) NOT NULL UNIQUE,
+    email VARCHAR(100) NOT NULL,
     phone_number VARCHAR(20) NOT NULL,
     billing_address VARCHAR(100) NOT NULL
 );
@@ -60,5 +60,4 @@ CREATE TABLE "ProductOrder" (
 );
 
 INSERT INTO "ClientUser"(client_id, client_name, email, phone_number, billing_address) VALUES ('0', 'None', 'None', 'None', 'None');
-INSERT INTO "Category" (category_name) VALUES ('Electronics');
 INSERT INTO "OrderState"(state_name) VALUES ('Confirmed'), ('Dispatched'), ('Delivered'), ('Canceled');

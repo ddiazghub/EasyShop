@@ -1,0 +1,94 @@
+{% extends "layout.html" %}
+
+{% block body %}
+    {{ breadcrumb("Sign Up or Sign In") }}
+
+    <!-- SECTION -->
+    <div class="section">
+        <!-- container -->
+        <div class="container">
+            <!-- row -->
+            <div class="row">
+                <div class="col-md-6 login-details">
+                    <!-- Sign In -->
+                    <div class="account-details">
+                        <div class="section-title text-center">
+                            <h3 class="title">Sign Up</h3>
+                        </div>
+                        <p>Create a new account</p>
+                        <div class="form-group">
+                            <input class="input is-invalid" type="text" id="full-name" placeholder="Full Name" required>
+                        </div>
+                        <div class="form-group">
+                            <input class="input" type="email" id="email" placeholder="Email" required>
+                        </div>
+                        <div class="form-group">
+                            <input class="input" type="text" id="address" placeholder="Address" required>
+                        </div>
+                        <div class="form-group">
+                            <input class="input" type="text" id="city" placeholder="City" required>
+                        </div>
+                        <div class="form-group">
+                            <input class="input" type="text" id="country" placeholder="Country" required>
+                        </div>
+                        <div class="form-group">
+                            <input class="input" type="tel" id="phone" placeholder="Phone Number" required>
+                        </div>
+                    </div>
+                    <!-- Sign In -->
+
+                    <!-- Account Details-->
+                    <div class="account-details">
+                        <div class="section-title">
+                            <h4 class="title">Account details</h4>
+                        </div>
+                        <div id="sign-up-failed" class="alert alert-danger alert-dismissible" role="alert" hidden>
+                            <button type="button" class="close hide-parent" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            The username already exists.
+                        </div>
+                        <div class="form-group">
+                            <input class="input" type="text" id="username" placeholder="Username" required>
+                        </div>
+                        <div class="form-group">
+                            <input class="input" type="password" id="password" placeholder="Enter Your Password" required>
+                        </div>
+                    </div>
+                    <!-- Account Details-->
+                     
+                    <button class="primary-btn order-submit" type="button" id="register-button">Sign Up</a>
+                </div>
+                
+                <!-- Sign In -->
+                <div class="col-md-5 login-details">
+                    <div class="section-title text-center">
+                        <h3 class="title">Sign In</h3>
+                    </div>
+                    <div id="login-failed" class="alert alert-danger alert-dismissible" role="alert" hidden>
+                        <button type="button" class="close hide-parent" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        Incorrect username or password.
+                    </div>
+                    <div class="order-summary">
+                        <p>Log In to an existing account</p>
+                        <div class="form-group">
+                            <input class="input" type="text" id="login-username" placeholder="Username" required>
+                        </div>
+                        <div class="form-group">
+                            <input class="input" type="password" id="login-password" placeholder="Password" required>
+                        </div>
+                    </div>
+                    <button class="primary-btn order-submit" type="button" id="login-button">Sign In</a>
+                </div>
+                <!-- Sign In -->
+            </div>
+            <!-- /row -->
+        </div>
+        <!-- /container -->
+    </div>
+    <!-- /SECTION -->
+
+    <script src="js/redirectLogin.js"></script>
+{% endblock %}

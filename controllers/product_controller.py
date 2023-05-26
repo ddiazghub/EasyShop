@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Response
 from service import product_service
-from model.product import Category, Product, ProductCreation, ProductModification, StockModification
+from model.product import Category, Product, ProductCreation, ProductModification, SortBy, StockModification
 
 router = APIRouter(
     prefix="/product",
@@ -11,27 +11,27 @@ router = APIRouter(
     }
 )
 
-@router.get("/")
-async def get_all_products() -> list[Product]:
-    return product_service.get_all()
+@router.get("")
+async def get_all_products(sort_by: SortBy | None = None) -> list[Product]:
+    return product_service.get_all(sort_by)
 
 @router.get("/{product_id}")
 async def get_by_id(product_id: int) -> Product:
     return product_service.get_by_id(product_id)
 
 @router.get("/supplier/{supplier_id}")
-async def get_by_supplier_id(supplier_id: int) -> list[Product]:
-    return product_service.get_by_supplier(supplier_id)
+async def get_by_supplier_id(supplier_id: int, sort_by: SortBy | None = None) -> list[Product]:
+    return product_service.get_by_supplier(supplier_id, sort_by)
 
 @router.get("/category/{category}")
-async def get_by_category(category: Category) -> list[Product]:
-    return product_service.get_by_category(category)
+async def get_by_category(category: Category, sort_by: SortBy | None = None) -> list[Product]:
+    return product_service.get_by_category(category, sort_by)
 
-@router.post("/")
+@router.post("")
 async def create_product(product: ProductCreation) -> Product:
     return product_service.create(product)
 
-@router.put("/")
+@router.put("")
 async def modify_product(modification: ProductModification) -> Product:
     return product_service.modify(modification)
 

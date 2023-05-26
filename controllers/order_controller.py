@@ -11,7 +11,7 @@ router = APIRouter(
     }
 )
 
-@router.get("/")
+@router.get("")
 async def get_all_orders() -> list[Order]:
     return order_service.get_all()
 
@@ -27,10 +27,10 @@ async def get_by_supplier_id(supplier_id: int) -> list[Order]:
 async def get_by_client_id(client_id: int) -> list[Order]:
     return order_service.get_by_client(client_id)
 
-@router.post("/")
+@router.post("")
 async def create_order(order: OrderCreation) -> Order:
     return order_service.create(order)
 
-@router.put("/")
+@router.put("")
 async def modify_order_state(modification: StateModification) -> Order:
     return order_service.modify_state(modification.order_id, modification.new_state)

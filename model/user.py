@@ -31,7 +31,7 @@ class ClientModification(BaseModel):
     phone_number: str
     billing_address: str
 
-class UserLogin(BaseModel):
+class Credentials(BaseModel):
     username: str
     password: str
 
@@ -50,7 +50,6 @@ class User(BaseModel):
         return User(user_id=result[0],
             username=result[1],
             client_data=Client.parse(result[2:]))
-    
-class PasswordModification(BaseModel):
-    user_id: int
+
+class PasswordUpdate(BaseModel):
     password: str

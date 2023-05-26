@@ -1,10 +1,40 @@
 from __future__ import annotations
 from pydantic import BaseModel
-from enum import IntEnum
+from enum import IntEnum, StrEnum
 from datetime import datetime
 
 class Category(IntEnum):
-    Electronics = 1
+    Vehicle = 1
+    Clothing = 2
+    Accessories = 3
+    Sports = 4
+    Home = 5
+    Garden = 6
+    Toys = 7
+    Business = 8
+    Industrial = 9
+    Health = 10
+    Pets = 11
+    Electronics = 12
+    School = 13
+    Art = 14
+
+class SortBy(StrEnum):
+    Popularity = "popularity"
+    Stock = "stock"
+    Price = "price"
+    Latest = "latest"
+
+    def to_field(self) -> str:
+        match self:
+            case SortBy.Popularity:
+                return "total_purchases"
+            case SortBy.Stock:
+                return "stock"
+            case SortBy.Price:
+                return "unit_price"
+            case SortBy.Latest:
+                return "created_at"
 
 class ProductCreation(BaseModel):
     name: str

@@ -1,0 +1,24 @@
+{% macro breadcrumb(title, parts=[]) %}
+    <!-- BREADCRUMB -->
+    <div id="breadcrumb" class="section">
+        <!-- container -->
+        <div class="container">
+            <!-- row -->
+            <div class="row">
+                <div class="col-md-12">
+                    <h3 class="breadcrumb-header">{{ title }}</h3>
+                    <ul class="breadcrumb-tree">
+                        <li><a href="/">Home</a></li>
+                        {% for part in parts %}
+                            <li><a href={{ part[0] }}>{{ part[1] }}</a></li>
+                        {% endfor %}
+                        <li class="active">{{ title }}</li>
+                    </ul>
+                </div>
+            </div>
+            <!-- /row -->
+        </div>
+        <!-- /container -->
+    </div>
+    <!-- /BREADCRUMB -->
+{% endmacro %}
