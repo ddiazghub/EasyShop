@@ -690,7 +690,7 @@ textarea.description-input {
     width: 0%;
     overflow: hidden;
     z-index: 22;
-    padding-top: 60px;
+    padding-top: 10px;
     -webkit-transform: translateX(-100%);
     -ms-transform: translateX(-100%);
     transform: translateX(-100%);
@@ -2436,4 +2436,10 @@ textarea.description-input {
   outline: none;
   padding: 12px 20px;
   border-radius: 4px;
+}
+
+@media (min-width: 1250px) {
+  #navigation-container {
+    width: 1250px;
+  }
 }

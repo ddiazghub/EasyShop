@@ -1,18 +1,18 @@
 <!-- NAVIGATION -->
 <nav id="navigation">
     <!-- container -->
-    <div class="container">
+    <div class="container" id="navigation-container">
         <!-- responsive-nav -->
         <div id="responsive-nav">
             <!-- NAV -->
             <ul class="main-nav nav navbar-nav">
-                <li class="active"><a href="#">Home</a></li>
-                <li><a href="#">Hot Deals</a></li>
-                <li><a href="#">Categories</a></li>
-                <li><a href="#">Laptops</a></li>
-                <li><a href="#">Smartphones</a></li>
-                <li><a href="#">Cameras</a></li>
-                <li><a href="#">Accessories</a></li>
+                <li class={{ "active" if current.value == 0 else "" }}><a href="/">Home</a></li>
+                {% set current = current.value if current else 0 %}
+
+                {% for category in categories %}
+                    {% set href = "/store?category=" + loop.index|string %}
+                    <li class={{ "active" if current == loop.index else "" }}><a href={{ href }}>{{ category.name }}</a></li>
+                {% endfor %}
             </ul>
             <!-- /NAV -->
         </div>

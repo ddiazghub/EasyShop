@@ -2,6 +2,12 @@ from __future__ import annotations
 from pydantic import BaseModel
 from enum import IntEnum, Enum
 from datetime import datetime
+from dataclasses import dataclass
+
+@dataclass
+class FakeCategory:
+    name: str
+    value: int
 
 class Category(IntEnum):
     Vehicle = 1

@@ -4,6 +4,7 @@ const productsContainer = document.getElementById("products-container")! as HTML
 const checkboxContainer = document.getElementById("checkbox-container")! as HTMLDivElement;
 const showingSpan = document.getElementById("showing-span")! as HTMLSpanElement;
 const pagination = document.getElementById("store-pagination")! as HTMLUListElement;
+const categoryCheckboxes = checkboxContainer.getElementsByTagName("input");
 
 let page = 1;
 let pages = 1;
@@ -16,11 +17,22 @@ const priceInput = {
 let products: Product[] = [];
 const selected: Set<Category> = new Set();
 
-window.addEventListener("DOMContentLoaded", getProducts);
 sortBySelect.addEventListener("change", getProducts);
 showSelect.addEventListener("change", renderProducts);
 
-for (const checkbox of checkboxContainer.getElementsByTagName("input")) {
+window.addEventListener("DOMContentLoaded", () => {
+    const query = new URLSearchParams(location.search);
+    const cat = Number(query.get("category")) as Category;
+
+    if (cat) {
+        selected.add(cat);
+        categoryCheckboxes[cat - 1].checked = true;
+    }
+    
+    getProducts();
+});
+
+for (const checkbox of categoryCheckboxes) {
     const categoryId = checkbox.getAttribute("data-category")!;
     const category = parseInt(categoryId) as Category;
 

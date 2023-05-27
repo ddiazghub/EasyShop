@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
-from model.product import Category
+from model.product import Category, FakeCategory
 from service import product_service
 
 router = APIRouter(include_in_schema=False)
@@ -9,7 +9,7 @@ templates = Jinja2Templates(directory="templates")
 
 @router.get("/")
 async def index(request: Request) -> HTMLResponse:
-    return templates.TemplateResponse("index.html", {"request": request, "categories": Category})
+    return templates.TemplateResponse("index.html", {"request": request, "categories": Category, "current": FakeCategory("Home", 0)})
 
 @router.get("/product")
 async def product(request: Request, product_id: int) -> HTMLResponse:
@@ -29,8 +29,8 @@ async def checkout(request: Request) -> HTMLResponse:
     return templates.TemplateResponse("checkout.html", {"request": request, "categories": Category})
 
 @router.get("/store")
-async def store(request: Request) -> HTMLResponse:
-    return templates.TemplateResponse("store.html", {"request": request, "categories": Category})
+async def store(request: Request, category: Category | None = None) -> HTMLResponse:
+    return templates.TemplateResponse("store.html", {"request": request, "categories": Category, "current": category if category else None})
 
 @router.get("/login")
 async def login(request: Request) -> HTMLResponse:
