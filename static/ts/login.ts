@@ -76,10 +76,7 @@ class Session {
             console.log(this.session.token.expires, now);
 
             if (this.session.token.expires < now) {
-                this.session = null;
-                document.getElementById("account-text")!.innerText = "Sign Up";
-                window.localStorage.removeItem("token");
-                window.localStorage.removeItem("user");
+                this.kill(false);
             } else {
                 console.log("Loaded session from localstorage: ", this.session);
                 document.getElementById("account-text")!.innerText = "My Account";
@@ -95,6 +92,15 @@ class Session {
         return this.session?.token ?? null;
     }
 
+    kill(redirect: boolean = true) {
+        this.session = null;
+        document.getElementById("account-text")!.innerText = "Sign Up";
+        window.localStorage.removeItem("session");
+
+        if (redirect)
+            location.href = "/login";
+    }
+
     static get(): Session {
         if (!Session.instance) {
             Session.instance = new Session();
@@ -107,10 +113,10 @@ class Session {
 
 window.addEventListener("DOMContentLoaded", Session.get);
 
-document.getElementById("register-button")!.addEventListener("click", () => {
+document.getElementById("register-button")?.addEventListener("click", () => {
     Session.get().register();
 });
 
-document.getElementById("login-button")!.addEventListener("click", () => {
+document.getElementById("login-button")?.addEventListener("click", () => {
     Session.get().login();
 });

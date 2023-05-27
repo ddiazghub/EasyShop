@@ -2,6 +2,11 @@ const showSelect = document.getElementById("show-select")! as HTMLSelectElement;
 const sortBySelect = document.getElementById("sort-by-select")! as HTMLSelectElement;
 const productsContainer = document.getElementById("products-container")! as HTMLDivElement;
 const checkboxContainer = document.getElementById("checkbox-container")! as HTMLDivElement;
+const showingSpan = document.getElementById("showing-span")! as HTMLSpanElement;
+const pagination = document.getElementById("store-pagination")! as HTMLUListElement;
+
+let page = 1;
+let pages = 1;
 
 const priceInput = {
     min: document.getElementById("price-min")! as HTMLInputElement,
@@ -61,16 +66,38 @@ function renderProduct(product: Product) {
                     <div class="product-btns">
                         <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
                         <button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>
-                        <button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>
+                        <button class="quick-view" onclick="location.href='${productUrl}'"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>
                     </div>
                 </div>
                 <div class="add-to-cart">
-                    <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
+                    <button class="add-to-cart-btn" onclick="location.href='${productUrl}'"><i class="fa fa-shopping-cart"></i> add to cart</button>
                 </div>
             </div>
         </div>
         <!-- /product -->
     `;
+}
+
+function setPage(newPage: number) {
+    page = newPage;
+    renderPagination();
+}
+
+function incrementPage() {
+    if (page < pages) {
+        page++;
+        renderPagination();
+    }
+}
+
+function renderPagination() {
+    pagination.innerHTML = ""; 
+    
+    for (let current = 1; current <= pages; current++) {
+        pagination.innerHTML += `<li ${current === page ? 'class="active"' : ""} onclick="setPage(${current})">${current}</li>`;
+    }
+    
+    pagination.innerHTML += `<li onclick="incrementPage()"><i class="fa fa-angle-right"></i></li>`;
 }
 
 function renderProducts() {
@@ -85,5 +112,9 @@ function renderProducts() {
     else
         prods = products.filter(product => selected.has(product.category) && product.unit_price >= min && product.unit_price <= max);
     
-    productsContainer.innerHTML = prods.slice(0, show).map(renderProduct).join("\n");
+    const showing = prods.slice(0, show);
+    pages = Math.max(1, Math.ceil(showing.length / show));
+    showingSpan.innerText = `${showing.length} - ${prods.length}`;
+    productsContainer.innerHTML = showing.map(renderProduct).join("\n");
+    renderPagination();
 }

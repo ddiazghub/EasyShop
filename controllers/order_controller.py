@@ -1,6 +1,8 @@
-from fastapi import APIRouter
+from typing import Annotated
+from fastapi import APIRouter, Header
 from service import order_service
 from model.order import Order, OrderCreation, StateModification
+from service import user_service
 
 router = APIRouter(
     prefix="/order",
@@ -28,7 +30,9 @@ async def get_by_client_id(client_id: int) -> list[Order]:
     return order_service.get_by_client(client_id)
 
 @router.post("")
-async def create_order(order: OrderCreation) -> Order:
+async def create_order(order: OrderCreation, authorization: Annotated[str, Header()]) -> Order:
+    user_service.authorize(authorization)
+
     return order_service.create(order)
 
 @router.put("")

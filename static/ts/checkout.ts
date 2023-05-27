@@ -14,39 +14,51 @@ window.addEventListener("DOMContentLoaded", () => {
     orderProductsContainer.innerHTML = "";
     orderTotalSpan.innerText = cart.subtotal.toString();
 
-    for (const { amount, product } of cart.cart.values()) {
+    for (const [supplierId, order] of cart.cart) {
         orderProductsContainer.innerHTML += `
-            <div class="order-col">
-                <div>${amount}x ${product.name}</div>
-                <div>$${product.unit_price}</div>
-            </div>
+            <hr style='margin-top: 10px; margin-bottom: 10px'>
+            <strong>Supplier: ${supplierId}</strong>
+            <hr style='margin-top: 10px; margin-bottom: 10px'>
         `;
+
+        for (const { amount, product } of order.values()) {
+            orderProductsContainer.innerHTML += `
+                <div class="order-col">
+                    <div>${amount}x ${product.name}</div>
+                    <div>$${product.unit_price}</div>
+                </div>
+            `;
+        }
     }
 });
 
 async function checkout() {
     const session = Session.get();
     let user = session.getUser();
-    const cart = [...Cart.get().cart.values()];
-    
+
     if (!user) {
         await session.register(false);
         user = session.getUser()!;
     }
 
-    const order: OrderCreation = {
-        client_id: user.client_data.client_id,
-        supplier_id: cart[0].product.supplier_id,
-        order_notes: orderNotesArea.value,
-        products: cart.map(entry => ({
-            product_id: entry.product.product_id,
-            amount: entry.amount
-        }))
-    };
+    for (const [supplierId, supplierOrder] of Cart.get().cart) {
+        const products = [...supplierOrder.values()];
 
-    console.log("Sending order to server: ", order);
-    const response: Order = await Api.post("/api/order", order);
-    console.log("Created order: ", response);
+        const order: OrderCreation = {
+            client_id: user.client_data.client_id,
+            supplier_id: supplierId,
+            order_notes: orderNotesArea.value,
+            products: products.map(entry => ({
+                product_id: entry.product.product_id,
+                amount: entry.amount
+            }))
+        };
+
+        console.log("Sending order to server: ", order);
+        const response: Order = await Api.post("/api/order", order);
+        console.log("Created order: ", response);
+    }
+    
     alert("Order created");
 }
 

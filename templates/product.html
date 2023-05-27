@@ -7,23 +7,7 @@
     ]) }}
 
     <!-- ADD TO CART CONFIRMATION MODAL -->
-    <button type="button" id="show-modal-btn" data-toggle="modal" data-target="#confirmation-modal" hidden></button>
-    <div class="modal fade" id="confirmation-modal" tabindex="-1" role="dialog" aria-labelledby="modalLabelSmall" aria-hidden="true">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <h4 class="modal-title" id="modalLabelSmall">Add to Cart</h4>
-                </div>
-
-                <div class="modal-body">
-                    Successfully added products to Cart.
-                </div>
-            </div>
-        </div>
-    </div>
+    {{ modal("show-modal-btn", "Add to Cart", "Successfully added products to Cart.") }}
     <!-- ADD TO CART CONFIRMATION MODAL -->
 
     <!-- SECTION -->

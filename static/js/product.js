@@ -4,9 +4,9 @@ const stockLabel = document.getElementById("product-stock");
 document.getElementById("add-to-cart-btn").addEventListener("click", addToCart);
 amountPicker.addEventListener("change", onPickerChange);
 window.addEventListener("DOMContentLoaded", () => {
-    const cart = Cart.get();
-    if (cart.contains(product.product_id))
-        reduceMax(cart.cart.get(product.product_id).amount);
+    const amount = Cart.get().getAmount(product);
+    if (amount)
+        reduceMax(amount);
 });
 function onPickerChange() {
     const amount = parseInt(amountPicker.value);

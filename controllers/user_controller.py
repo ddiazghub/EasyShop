@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Response
+from typing import Annotated
+from fastapi import APIRouter, Header, Response
 from model.auth import UserWithToken
 from model.user import Client, ClientModification, PasswordUpdate, User, UserCreation, Credentials
 from service import user_service
@@ -38,8 +39,7 @@ async def modify_client_data(modification: ClientModification) -> Client:
     return user_service.modify(modification)
 
 @router.patch("/password")
-#async def change_password(authorization: Annotated[str, Header()], password: str) -> Response:
-async def change_password(authorization: str, password: PasswordUpdate) -> Response:
+async def change_password(authorization: Annotated[str, Header()], password: PasswordUpdate) -> Response:
     payload = user_service.authorize(authorization)
     user_service.change_password(payload.user_id, password.password)
 

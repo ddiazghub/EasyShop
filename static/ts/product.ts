@@ -6,10 +6,10 @@ document.getElementById("add-to-cart-btn")!.addEventListener("click", addToCart)
 amountPicker.addEventListener("change", onPickerChange);
 
 window.addEventListener("DOMContentLoaded", () => {
-    const cart = Cart.get();
+    const amount = Cart.get().getAmount(product);
 
-    if (cart.contains(product.product_id))
-        reduceMax(cart.cart.get(product.product_id)!.amount);
+    if (amount)
+        reduceMax(amount);
 });
 
 function onPickerChange() {

@@ -13,35 +13,38 @@ class Api {
         return head;
     }
 
-    static async get<T>(url: string, requestHeaders: HeadersInit = {}): Promise<T> {
-        const headers = this.setToken(requestHeaders);
-        const response = await fetch(url, { headers });
+    static async handleStatus(response: Response) {
+        switch (response.status) {
+            case 401:
+                Session.get().kill();
+                throw await response.json();
+            default:
+                if (!response.ok)
+                    throw await response.json();
+        }
+    }
 
-        if (!response.ok)
-            throw "Error on HTTP request";
+    static async request<T extends BodyInit, E>(url: string, method: string, body: T | undefined = undefined, requestHeaders: HeadersInit = {}): Promise<E> {
+        const headers = this.setToken(requestHeaders);
+        const response = await fetch(url, { method, headers, body});
+        Api.handleStatus(response);
 
         return await response.json();
+    }
+
+    static async get<T>(url: string, requestHeaders: HeadersInit = {}): Promise<T> {
+        return await Api.request(url, "GET", undefined, requestHeaders);
     }
 
     static async postRaw<T extends BodyInit, E>(url: string, body: T, requestHeaders: HeadersInit = {}): Promise<E> {
-        const headers = this.setToken(requestHeaders);
-        const response = await fetch(url, { method: "POST", headers, body });
-
-        if (!response.ok)
-            throw "Error on HTTP request";
-
-        return await response.json();
+        return await Api.request(url, "POST", body, requestHeaders);
     }
 
     static async sendBody<T, E>(url: string, method: string, body: T, requestHeaders: HeadersInit = {}): Promise<E> {
-        const headers = this.setToken(requestHeaders);
+        const headers = new Headers(requestHeaders);
         headers.append("Content-Type", "application/json");
-        const response = await fetch(url, { method, headers, body: JSON.stringify(body) });
 
-        if (!response.ok)
-            throw "Error on HTTP request";
-
-        return await response.json();
+        return await Api.request(url, method, JSON.stringify(body), headers);
     }
 
     static async post<T, E>(url: string, body: T, headers: HeadersInit = {}): Promise<E> {
@@ -50,5 +53,9 @@ class Api {
 
     static async put<T, E>(url: string, body: T, headers: HeadersInit = {}): Promise<E> {
         return this.sendBody(url, "PUT", body, headers);
+    }
+
+    static async delete(url: string, headers: HeadersInit = {}): Promise<void> {
+        return await Api.request(url, "DELETE", undefined, headers);
     }
 }
