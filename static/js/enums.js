@@ -23,3 +23,10 @@ var OrderState;
     OrderState[OrderState["Delivered"] = 3] = "Delivered";
     OrderState[OrderState["Canceled"] = 4] = "Canceled";
 })(OrderState || (OrderState = {}));
+var SortBy;
+(function (SortBy) {
+    SortBy["Popularity"] = "popularity";
+    SortBy["Stock"] = "stock";
+    SortBy["Price"] = "price";
+    SortBy["Latest"] = "latest";
+})(SortBy || (SortBy = {}));

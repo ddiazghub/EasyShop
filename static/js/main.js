@@ -1,23 +1,8 @@
-(function($) {
-	"use strict"
-
-	// Mobile Nav toggle
-	$('.menu-toggle > a').on('click', function (e) {
-		e.preventDefault();
-		$('#responsive-nav').toggleClass('active');
-	})
-
-	// Fix cart dropdown from closing
-	$('.cart-dropdown').on('click', function (e) {
-		e.stopPropagation();
-	});
-
-	/////////////////////////////////////////
-
+function triggerSlicks() {
 	// Products Slick
 	$('.products-slick').each(function() {
 		var $this = $(this),
-				$nav = $this.attr('data-nav');
+			$nav = $this.attr('data-nav');
 
 		$this.slick({
 			slidesToShow: 4,
@@ -29,20 +14,19 @@
 			arrows: true,
 			appendArrows: $nav ? $nav : false,
 			responsive: [{
-	        breakpoint: 991,
-	        settings: {
-	          slidesToShow: 2,
-	          slidesToScroll: 1,
-	        }
-	      },
-	      {
-	        breakpoint: 480,
-	        settings: {
-	          slidesToShow: 1,
-	          slidesToScroll: 1,
-	        }
-	      },
-	    ]
+				breakpoint: 991,
+				settings: {
+				slidesToShow: 2,
+				slidesToScroll: 1,
+				}
+			},
+			{
+				breakpoint: 480,
+				settings: {
+				slidesToShow: 1,
+				slidesToScroll: 1,
+				}
+			}]
 		});
 	});
 
@@ -60,7 +44,23 @@
 			appendArrows: $nav ? $nav : false,
 		});
 	});
+}
+	
+(function ($) {
+	"use strict"
 
+	// Mobile Nav toggle
+	$('.menu-toggle > a').on('click', function (e) {
+		e.preventDefault();
+		$('#responsive-nav').toggleClass('active');
+	})
+
+	// Fix cart dropdown from closing
+	$('.cart-dropdown').on('click', function (e) {
+		e.stopPropagation();
+	});
+
+	/////////////////////////////////////////
 	/////////////////////////////////////////
 
 	// Product Main img Slick

@@ -21,3 +21,10 @@ enum OrderState {
     Delivered,
     Canceled
 }
+
+enum SortBy {
+    Popularity = "popularity",
+    Stock = "stock",
+    Price = "price",
+    Latest = "latest",
+}
