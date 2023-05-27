@@ -1,13 +1,14 @@
 "use strict";
 let products = [];
-async function getProducts(sortBy) {
-    products = await Api.get(`/api/product?sort_by=${sortBy}`);
+async function getProducts(sortBy, supplierId = null) {
+    products = await Api.get(`/api/product${supplierId ? "/supplier/" + supplierId : ""}?sort_by=${sortBy}`);
 }
-function renderProduct(product) {
+function renderProduct(product, width = 4) {
     const productUrl = `/product?product_id=${product.product_id}`;
+    const clientId = Session.get().getUser()?.client_data.client_id;
     return `
         <!-- product -->
-        <div class="col-md-4 col-xs-6">
+        <div class="col-md-${width} col-xs-6">
             <div class="product">
                 <a href="${productUrl}">
                     <div class="product-img">
@@ -32,7 +33,7 @@ function renderProduct(product) {
                     </div>
                 </div>
                 <div class="add-to-cart">
-                    <button class="add-to-cart-btn" onclick="location.href='${productUrl}'"><i class="fa fa-shopping-cart"></i> add to cart</button>
+                    <button class="add-to-cart-btn" onclick="location.href='${productUrl}'"><i class="fa fa-shopping-cart"></i> ${product.supplier_id === clientId ? "Modify Stock" : "Add to Cart"}</button>
                 </div>
             </div>
         </div>
@@ -46,7 +47,7 @@ function renderProductWidget(product) {
         <div class="product-widget">
             <a href="${productUrl}">
                 <div class="product-img">
-                    <img src="${product.image_url}" alt="">
+                    <img src="${product.image_url}" onerror="this.src = '/img/fallback.png'" alt="">
                 </div>
             </a>
             <div class="product-body">
@@ -56,5 +57,5 @@ function renderProductWidget(product) {
             </div>
         </div>
         <!-- product widget -->
-        `;
+    `;
 }

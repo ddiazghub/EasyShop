@@ -42,6 +42,9 @@ class Api {
     static async put(url, body, headers = {}) {
         return this.sendBody(url, "PUT", body, headers);
     }
+    static async patch(url, body, headers = {}) {
+        return this.sendBody(url, "PATCH", body, headers);
+    }
     static async delete(url, headers = {}) {
         return await Api.request(url, "DELETE", undefined, headers);
     }

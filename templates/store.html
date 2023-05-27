@@ -3,7 +3,7 @@
 {% block body %}
     {{ breadcrumb(current.name if current else "Store", [
         ("/store", "Categories")
-    ]) }}
+    ] if current and current.value > 0 else []) }}
 
     <!-- SECTION -->
     <div class="section">
@@ -55,7 +55,7 @@
                     <!-- /aside Widget -->
 
                     <!-- aside Widget -->
-                    <div class="aside">
+                    <div class="aside" style={{ "display:none;" if supplier else "" }}>
                         <h3 class="aside-title">Supplier</h3>
                         <div class="checkbox-filter">
                             <div class="input-checkbox">
@@ -111,7 +111,7 @@
                     <!-- /aside Widget -->
 
                     <!-- aside Widget -->
-                    <div class="aside">
+                    <div class="aside" style={{ "display:none;" if supplier else "" }}>
                         <h3 class="aside-title">Top selling</h3>
                         <div class="product-widget">
                             <div class="product-img">
@@ -173,10 +173,9 @@
                                 </select>
                             </label>
                         </div>
-                        <ul class="store-grid">
-                            <li class="active"><i class="fa fa-th"></i></li>
-                            <li><a href="#"><i class="fa fa-th-list"></i></a></li>
-                        </ul>
+                        <div class="store-grid">
+                            <button class="create-product-btn" id="create-product-btn" onclick="location.href='/product-create'"><i class="fa fa-plus"></i> Create Product</button>
+                        </div>
                     </div>
                     <!-- /store top filter -->
 
@@ -203,4 +202,11 @@
     <!-- /SECTION -->
 
     <script src="js/store.js"></script>
+    <script>
+        {% if supplier %}
+            const supplier = {{ supplier|safe }};
+        {% else %}
+            const supplier = undefined;
+        {% endif %}
+    </script>
 {% endblock %}

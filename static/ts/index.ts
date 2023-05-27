@@ -20,7 +20,7 @@ function renderWidgets(container: HTMLDivElement, products: Product[]) {
     for (let i = 0; i < products.length; i += 3) {
         container.innerHTML += `
             <div>
-                ${products.slice(i, i + 3).map(renderProductWidget).join("\n")}
+                ${products.slice(i, i + 3).map(product => renderProductWidget(product)).join("\n")}
             </div>
         `;
     }
@@ -32,8 +32,8 @@ function renderIndexProducts() {
     const mostPopular = popular.slice(0, 15);
     const newest = products.slice(0, 15);
 
-    newContainer.innerHTML = newest.map(renderProduct).join("\n");
-    topContainer.innerHTML = mostPopular.map(renderProduct).join("\n");
+    newContainer.innerHTML = newest.map(product => renderProduct(product)).join("\n");
+    topContainer.innerHTML = mostPopular.map(product => renderProduct(product)).join("\n");
     renderWidgets(newWidgetContainer, newest);
     renderWidgets(topWidgetContainer, mostPopular);
     renderWidgets(bestWidgetContainer, newest);

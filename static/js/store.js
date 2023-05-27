@@ -36,7 +36,23 @@ for (const checkbox of categoryCheckboxes) {
     });
 }
 async function getStoreProducts() {
-    await getProducts(sortBySelect.value);
+    if (supplier) {
+        let supplierId;
+        if (supplier === -1) {
+            const clientId = Session.get().getUser()?.client_data.client_id;
+            if (!clientId)
+                return location.href = "/login";
+            supplierId = clientId;
+            sortBySelect.value = SortBy.Latest;
+        }
+        else {
+            supplierId = supplier.client_id;
+        }
+        await getProducts(sortBySelect.value, supplierId);
+    }
+    else {
+        await getProducts(sortBySelect.value);
+    }
     renderProducts();
 }
 function setPage(newPage) {
@@ -69,6 +85,6 @@ function renderProducts() {
     const showing = prods.slice(0, show);
     pages = Math.max(1, Math.ceil(showing.length / show));
     showingSpan.innerText = `${showing.length} - ${prods.length}`;
-    productsContainer.innerHTML = showing.map(renderProduct).join("\n");
+    productsContainer.innerHTML = showing.map(product => renderProduct(product)).join("\n");
     renderPagination();
 }

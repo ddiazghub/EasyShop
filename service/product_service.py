@@ -4,12 +4,13 @@ from psycopg import Cursor
 from psycopg.errors import CheckViolation
 from db import database
 
-def get_where(where_clause: str | None = None, params: tuple | list = [], sort_by: SortBy | None = None) -> list[Product]:
+def get_where(where_clause: str | None = None, params: tuple | list = [], sort_by: SortBy | None = None, limit: int | None = None) -> list[Product]:
     def product_get(cursor: Cursor) -> list[Product]:
         where = f"WHERE {where_clause}" if where_clause else ""
         order_by = f"ORDER BY {sort_by.to_field()} DESC" if sort_by else ""
+        lim = f"LIMIT {limit}" if limit else ""
 
-        return [Product.parse(record) for record in cursor.execute(f"SELECT * FROM \"Product\" {where} {order_by}", params)] 
+        return [Product.parse(record) for record in cursor.execute(f"SELECT * FROM \"Product\" {where} {order_by} {lim}", params)] 
     
     return database.transaction(product_get)
 
@@ -32,6 +33,9 @@ def get_by_supplier(supplier_id: int, sort_by: SortBy | None = None) -> list[Pro
 
 def get_by_category(category: Category, sort_by: SortBy | None = None) -> list[Product]:
     return get_where("category_id = %s", [int(category)], sort_by)
+
+def get_related(product: Product) -> list[Product]:
+    return get_where("supplier_id = %s OR category_id = %s", [product.supplier_id, int(product.category)], SortBy.Popularity, 4)
 
 def create(product: ProductCreation) -> Product:
     def product_create(cursor: Cursor) -> Product:

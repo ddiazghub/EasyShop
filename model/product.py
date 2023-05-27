@@ -88,3 +88,6 @@ class Product(BaseModel):
 class StockModification(BaseModel):
     product_id: int
     stock: int
+
+class ProductList(BaseModel):
+    __root__: list[Product]

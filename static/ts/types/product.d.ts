@@ -24,3 +24,8 @@ interface CartEntry {
     product: Product,
     amount: number
 }
+
+interface StockModification {
+    product_id: number,
+    stock: number
+}

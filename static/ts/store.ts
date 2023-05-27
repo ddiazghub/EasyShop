@@ -1,3 +1,5 @@
+declare const supplier: Client;
+
 const showSelect = document.getElementById("show-select")! as HTMLSelectElement;
 const sortBySelect = document.getElementById("sort-by-select")! as HTMLSelectElement;
 const productsContainer = document.getElementById("products-container")! as HTMLDivElement;
@@ -46,7 +48,26 @@ for (const checkbox of categoryCheckboxes) {
 }
 
 async function getStoreProducts() {
-    await getProducts(sortBySelect.value as SortBy);
+    if (supplier) {
+        let supplierId: number;
+
+        if (supplier as unknown as number === -1) {
+            const clientId = Session.get().getUser()?.client_data.client_id;
+
+            if (!clientId)
+                return location.href = "/login";
+            
+            supplierId = clientId;
+            sortBySelect.value = SortBy.Latest;
+        } else {
+            supplierId = supplier.client_id;
+        }
+
+        await getProducts(sortBySelect.value as SortBy, supplierId);
+    } else {
+        await getProducts(sortBySelect.value as SortBy);
+    }
+
     renderProducts();
 }
 
@@ -87,6 +108,6 @@ function renderProducts() {
     const showing = prods.slice(0, show);
     pages = Math.max(1, Math.ceil(showing.length / show));
     showingSpan.innerText = `${showing.length} - ${prods.length}`;
-    productsContainer.innerHTML = showing.map(renderProduct).join("\n");
+    productsContainer.innerHTML = showing.map(product => renderProduct(product)).join("\n");
     renderPagination();
 }

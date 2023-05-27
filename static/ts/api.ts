@@ -26,7 +26,7 @@ class Api {
 
     static async request<T extends BodyInit, E>(url: string, method: string, body: T | undefined = undefined, requestHeaders: HeadersInit = {}): Promise<E> {
         const headers = this.setToken(requestHeaders);
-        const response = await fetch(url, { method, headers, body});
+        const response = await fetch(url, { method, headers, body });
         Api.handleStatus(response);
 
         return await response.json();
@@ -53,6 +53,10 @@ class Api {
 
     static async put<T, E>(url: string, body: T, headers: HeadersInit = {}): Promise<E> {
         return this.sendBody(url, "PUT", body, headers);
+    }
+
+    static async patch<T, E>(url: string, body: T, headers: HeadersInit = {}): Promise<E> {
+        return this.sendBody(url, "PATCH", body, headers);
     }
 
     static async delete(url: string, headers: HeadersInit = {}): Promise<void> {
