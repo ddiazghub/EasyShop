@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 const orderProductsContainer = document.getElementById("order-products-container");
 const orderTotalSpan = document.getElementById("order-total");
 const orderNotesArea = document.getElementById("order-notes-area");
@@ -27,29 +36,31 @@ window.addEventListener("DOMContentLoaded", () => {
         }
     }
 });
-async function checkout() {
-    const session = Session.get();
-    let user = session.getUser();
-    if (!user) {
-        await session.register(false);
-        user = session.getUser();
-    }
-    for (const [supplierId, supplierOrder] of Cart.get().cart) {
-        const products = [...supplierOrder.values()];
-        const order = {
-            client_id: user.client_data.client_id,
-            supplier_id: supplierId,
-            order_notes: orderNotesArea.value,
-            products: products.map(entry => ({
-                product_id: entry.product.product_id,
-                amount: entry.amount
-            }))
-        };
-        console.log("Sending order to server: ", order);
-        const response = await Api.post("/api/order", order);
-        console.log("Created order: ", response);
-    }
-    alert("Order created");
+function checkout() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const session = Session.get();
+        let user = session.getUser();
+        if (!user) {
+            yield session.register(false);
+            user = session.getUser();
+        }
+        for (const [supplierId, supplierOrder] of Cart.get().cart) {
+            const products = [...supplierOrder.values()];
+            const order = {
+                client_id: user.client_data.client_id,
+                supplier_id: supplierId,
+                order_notes: orderNotesArea.value,
+                products: products.map(entry => ({
+                    product_id: entry.product.product_id,
+                    amount: entry.amount
+                }))
+            };
+            console.log("Sending order to server: ", order);
+            const response = yield Api.post("/api/order", order);
+            console.log("Created order: ", response);
+        }
+        alert("Order created");
+    });
 }
 function unregistered() {
     return `

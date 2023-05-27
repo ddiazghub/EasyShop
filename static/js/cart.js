@@ -4,10 +4,6 @@ const subtotalSpan = document.getElementById("order-subtotal");
 const itemQuantityDiv = document.getElementById("order-item-qty-div");
 const itemQuantitySpan = document.getElementById("order-item-qty");
 class Cart {
-    static instance;
-    cart;
-    subtotal;
-    size;
     constructor(entries = []) {
         this.cart = new Map();
         this.subtotal = 0.0;
@@ -20,6 +16,8 @@ class Cart {
         this.render();
     }
     add(product, amount) {
+        if (amount == 0)
+            return;
         const order = this.getSupplierOrder(product.supplier_id);
         const entry = order.get(product.product_id);
         if (entry) {
@@ -37,10 +35,12 @@ class Cart {
         console.log("Added items to cart, new state: ", this.cart);
     }
     contains(product) {
-        return this.cart.get(product.supplier_id)?.has(product.product_id) ?? false;
+        var _a, _b;
+        return (_b = (_a = this.cart.get(product.supplier_id)) === null || _a === void 0 ? void 0 : _a.has(product.product_id)) !== null && _b !== void 0 ? _b : false;
     }
     getAmount(product) {
-        return this.cart.get(product.supplier_id)?.get(product.product_id)?.amount ?? null;
+        var _a, _b, _c;
+        return (_c = (_b = (_a = this.cart.get(product.supplier_id)) === null || _a === void 0 ? void 0 : _a.get(product.product_id)) === null || _b === void 0 ? void 0 : _b.amount) !== null && _c !== void 0 ? _c : null;
     }
     isEmpty() {
         return this.cart.size === 0;
@@ -114,7 +114,8 @@ class Cart {
         `;
     }
     static load() {
-        const cartJson = window.localStorage.getItem("cart") ?? "[]";
+        var _a;
+        const cartJson = (_a = window.localStorage.getItem("cart")) !== null && _a !== void 0 ? _a : "[]";
         const cart = JSON.parse(cartJson);
         console.log("Loaded cart from localstorage: ", cart);
         return new Cart(cart);

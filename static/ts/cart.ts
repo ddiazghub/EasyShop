@@ -25,6 +25,9 @@ class Cart {
     }
 
     add(product: Product, amount: number) {
+        if (amount == 0)
+            return;
+        
         const order = this.getSupplierOrder(product.supplier_id);
         const entry = order.get(product.product_id);
 

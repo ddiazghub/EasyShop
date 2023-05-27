@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 const amountPicker = document.getElementById("product-amount");
 const stockLabel = document.getElementById("product-stock");
 const relatedContainer = document.getElementById("related-products-container");
@@ -7,12 +16,13 @@ const showModal = document.getElementById("show-modal-btn");
 const modalBody = document.getElementById("modal-body");
 let ownsProduct;
 window.addEventListener("DOMContentLoaded", () => {
+    var _a;
     const amount = Cart.get().getAmount(product);
     if (amount)
         reduceMax(amount);
     renderRelated();
     triggerSlicks();
-    const clientId = Session.get().getUser()?.client_data.client_id;
+    const clientId = (_a = Session.get().getUser()) === null || _a === void 0 ? void 0 : _a.client_data.client_id;
     ownsProduct = product.supplier_id == clientId;
     let icon;
     let innerText;
@@ -49,18 +59,20 @@ function addToCart() {
     reduceMax(amount);
     showModal.click();
 }
-async function addStock() {
-    const amount = parseInt(amountPicker.value);
-    if (amount == 0)
-        return;
-    const modification = {
-        product_id: product.product_id,
-        stock: amount
-    };
-    const prod = await Api.patch("/api/product/stock", modification);
-    product.stock = prod.stock;
-    showModal.click();
-    stockLabel.innerText = prod.stock > 0 ? `${prod.stock} Units In Stock` : "Unavailable";
+function addStock() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const amount = parseInt(amountPicker.value);
+        if (amount == 0)
+            return;
+        const modification = {
+            product_id: product.product_id,
+            stock: amount
+        };
+        const prod = yield Api.patch("/api/product/stock", modification);
+        product.stock = prod.stock;
+        showModal.click();
+        stockLabel.innerText = prod.stock > 0 ? `${prod.stock} Units In Stock` : "Unavailable";
+    });
 }
 function reduceMax(amount) {
     const newMax = parseInt(amountPicker.max) - amount;
