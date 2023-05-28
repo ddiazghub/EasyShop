@@ -12,8 +12,11 @@ router = APIRouter(
 )
 
 @router.get("")
-async def get_all_products(sort_by: SortBy | None = None) -> list[Product]:
-    return product_service.get_all(sort_by)
+async def get_all_products(sort_by: SortBy | None = None, search: str = "", category: Category | None = None) -> list[Product]:
+    if category:
+        return product_service.get_by_category(category, sort_by, search)
+    else:
+        return product_service.get_all(sort_by, search)
 
 @router.get("/{product_id}")
 async def get_by_id(product_id: int) -> Product:
@@ -24,7 +27,7 @@ async def get_by_supplier_id(supplier_id: int, sort_by: SortBy | None = None) ->
     return product_service.get_by_supplier(supplier_id, sort_by)
 
 @router.get("/category/{category}")
-async def get_by_category(category: Category, sort_by: SortBy | None = None) -> list[Product]:
+async def get_by_category(category: Category, sort_by: SortBy | None = None, search: str = "") -> list[Product]:
     return product_service.get_by_category(category, sort_by)
 
 @router.post("")

@@ -7,6 +7,7 @@ const checkboxContainer = document.getElementById("checkbox-container")! as HTML
 const showingSpan = document.getElementById("showing-span")! as HTMLSpanElement;
 const pagination = document.getElementById("store-pagination")! as HTMLUListElement;
 const categoryCheckboxes = checkboxContainer.getElementsByTagName("input");
+const query = new URLSearchParams(location.search);
 
 let page = 1;
 let pages = 1;
@@ -21,8 +22,7 @@ const selected: Set<Category> = new Set();
 sortBySelect.addEventListener("change", getStoreProducts);
 showSelect.addEventListener("change", renderProducts);
 
-window.addEventListener("DOMContentLoaded", () => {
-    const query = new URLSearchParams(location.search);
+window.addEventListener("DOMContentLoaded", async () => {
     const cat = Number(query.get("category")) as Category;
 
     if (cat) {
@@ -30,6 +30,7 @@ window.addEventListener("DOMContentLoaded", () => {
         categoryCheckboxes[cat - 1].checked = true;
     }
     
+    await getSuppliers();
     getStoreProducts();
 });
 
@@ -48,7 +49,7 @@ for (const checkbox of categoryCheckboxes) {
 }
 
 async function getStoreProducts() {
-    const promise = getSuppliers();
+    const search = query.get("search");
 
     if (supplier) {
         let supplierId: number;
@@ -65,12 +66,11 @@ async function getStoreProducts() {
             supplierId = supplier.client_id;
         }
 
-        await getProducts(sortBySelect.value as SortBy, supplierId);
+        await getProducts(sortBySelect.value as SortBy, search, supplierId);
     } else {
-        await getProducts(sortBySelect.value as SortBy);
+        await getProducts(sortBySelect.value as SortBy, search);
     }
 
-    await promise;
     renderProducts();
 }
 

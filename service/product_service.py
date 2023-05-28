@@ -4,18 +4,31 @@ from psycopg import Cursor
 from psycopg.errors import CheckViolation
 from db import database
 
-def get_where(where_clause: str | None = None, params: tuple | list = [], sort_by: SortBy | None = None, limit: int | None = None) -> list[Product]:
+def get_where(where_clause: str | None = None, params: tuple | list = [], sort_by: SortBy | None = None, limit: int | None = None, search: str = "") -> list[Product]:
     def product_get(cursor: Cursor) -> list[Product]:
         where = f"WHERE {where_clause}" if where_clause else ""
         order_by = f"ORDER BY {sort_by.to_field()} DESC" if sort_by else ""
         lim = f"LIMIT {limit}" if limit else ""
+        par = [*params]
 
-        return [Product.parse(record) for record in cursor.execute(f"SELECT * FROM \"Product\" {where} {order_by} {lim}", params)] 
+        if search != "":
+            where_search = "LOWER(product_name) LIKE LOWER(%s) OR LOWER(description) LIKE LOWER(%s)"
+            s = f"%{search}%"
+            par.extend((s, s))
+
+            if where == "":
+                where = f"WHERE {where_search}"
+            else:
+                where += f"AND {where_search}"
+        
+        query = f"SELECT * FROM \"Product\" {where} {order_by} {lim}"
+        print(query, par)
+        return [Product.parse(record) for record in cursor.execute(query, par)] 
     
     return database.transaction(product_get)
 
-def get_all(sort_by: SortBy | None = None) -> list[Product]:
-    return get_where(sort_by=sort_by)
+def get_all(sort_by: SortBy | None = None, search: str = "") -> list[Product]:
+    return get_where(sort_by=sort_by, search=search)
 
 def get_by_id(product_id: int) -> Product:
     def product_get(cursor: Cursor) -> Product:
@@ -31,8 +44,8 @@ def get_by_id(product_id: int) -> Product:
 def get_by_supplier(supplier_id: int, sort_by: SortBy | None = None) -> list[Product]:
     return get_where("supplier_id = %s", [supplier_id], sort_by)
 
-def get_by_category(category: Category, sort_by: SortBy | None = None) -> list[Product]:
-    return get_where("category_id = %s", [int(category)], sort_by)
+def get_by_category(category: Category, sort_by: SortBy | None = None, search: str = "") -> list[Product]:
+    return get_where("category_id = %s", [int(category)], sort_by, search=search)
 
 def get_related(product: Product) -> list[Product]:
     def product_get(cursor: Cursor) -> Product:

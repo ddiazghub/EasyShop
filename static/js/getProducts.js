@@ -1,7 +1,7 @@
 "use strict";
 let products = [];
-async function getProducts(sortBy, supplierId = null) {
-    products = await Api.get(`/api/product${supplierId ? "/supplier/" + supplierId : ""}?sort_by=${sortBy}`);
+async function getProducts(sortBy, search = null, supplierId = null) {
+    products = await Api.get(`/api/product${supplierId ? "/supplier/" + supplierId : ""}?sort_by=${sortBy}${search ? "&search=" + search : ""}`);
 }
 function renderProduct(product, width = 4) {
     const productUrl = `/product?product_id=${product.product_id}`;

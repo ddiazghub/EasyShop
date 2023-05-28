@@ -1,7 +1,7 @@
 let products: Product[] = [];
 
-async function getProducts(sortBy: SortBy, supplierId: number | null = null) {
-    products = await Api.get(`/api/product${supplierId ? "/supplier/" + supplierId : ""}?sort_by=${sortBy}`);
+async function getProducts(sortBy: SortBy, search: string | null = null, supplierId: number | null = null) {
+    products = await Api.get(`/api/product${supplierId ? "/supplier/" + supplierId : ""}?sort_by=${sortBy}${search ? "&search=" + search : ""}`);
 }
 
 function renderProduct(product: Product | Product & { supplier_name: string }, width: number = 4) {
