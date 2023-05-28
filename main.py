@@ -35,14 +35,3 @@ async def validation_exception_handler(request: Request, exc: JWTError | Expired
 app.include_router(api)
 app.include_router(client)
 app.mount("/", StaticFiles(directory="static", html=True), name="static")
-
-"""
-@app.get("/accidents", tags=["accidents"])
-async def get_accidents(
-    fields: Annotated[list[str], Query(description=FIELDS_DESCRIPTION)] = [],
-    start: Annotated[str | None, Query(description=START_DESCRIPTION)] = None,
-    end: Annotated[str | None, Query(description=END_DESCRIPTION)] = None,
-    limit: Annotated[int, Query(description=LIMIT_DESCRIPTION)] = 100
-) -> list[Accident]:
-    return accidents(fields, start, end, limit)
-"""
