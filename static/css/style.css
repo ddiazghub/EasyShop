@@ -2495,3 +2495,41 @@ textarea.description-input {
 .product-supplier li+li {
   margin-left: 10px;
 }
+
+.user-profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background-color: #DDBB85; /* Matching brown background */
+  border-radius: 5px;
+}
+
+.profile-name {
+  font-size: 24px;
+  margin-bottom: 10px;
+  color: #3d427b; /* Matching heading color */
+}
+
+.profile-email,
+.profile-address {
+  margin-bottom: 10px;
+  color: #333; /* Matching body text color */
+}
+
+.profile-actions a {
+  margin: 0 10px;
+  background-color: #2B2D42; /* Matching link/button background color */
+  color: #FFF; /* Matching link/button text color */
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px; /* Adjust the value as needed */
+
+}
+
+.profile-actions a:hover,
+.profile-actions a:focus {
+  color: #c2ac03; /* Matching link/button hover/focus color */
+  text-decoration: none;
+  outline: none;
+}
