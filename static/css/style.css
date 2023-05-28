@@ -2533,3 +2533,7 @@ textarea.description-input {
   text-decoration: none;
   outline: none;
 }
+
+.user-profile-img {
+  max-height: 300px;
+}
