@@ -1,5 +1,5 @@
 from model.error import NEGATIVE_STOCK, NOT_FOUND, NEGATIVE_PRICE
-from model.product import Category, ProductCreation, Product, ProductModification, SortBy
+from model.product import Category, ProductCreation, Product, ProductModification, ProductWithSupplier, SortBy
 from psycopg import Cursor
 from psycopg.errors import CheckViolation
 from db import database
@@ -35,7 +35,19 @@ def get_by_category(category: Category, sort_by: SortBy | None = None) -> list[P
     return get_where("category_id = %s", [int(category)], sort_by)
 
 def get_related(product: Product) -> list[Product]:
-    return get_where("supplier_id = %s OR category_id = %s", [product.supplier_id, int(product.category)], SortBy.Popularity, 4)
+    def product_get(cursor: Cursor) -> Product:
+        query = """
+            SELECT p.*, c.client_name
+            FROM "Product" AS p
+            JOIN "ClientUser" AS c ON c.client_id = p.supplier_id
+            WHERE supplier_id = %s OR category_id = %s
+            ORDER BY total_purchases DESC
+            LIMIT 4
+        """
+
+        return [ProductWithSupplier.parse(record) for record in cursor.execute(query, [product.supplier_id, int(product.category)])] 
+    
+    return database.transaction(product_get)
 
 def create(product: ProductCreation) -> Product:
     def product_create(cursor: Cursor) -> Product:

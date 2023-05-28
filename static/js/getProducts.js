@@ -6,6 +6,7 @@ async function getProducts(sortBy, supplierId = null) {
 function renderProduct(product, width = 4) {
     const productUrl = `/product?product_id=${product.product_id}`;
     const clientId = Session.get().getUser()?.client_data.client_id;
+    const supplierName = "supplier_name" in product ? product.supplier_name : suppliersIndex.get(product.supplier_id).client_data.name;
     return `
         <!-- product -->
         <div class="col-md-${width} col-xs-6">
@@ -21,7 +22,7 @@ function renderProduct(product, width = 4) {
                     <h4 class="product-price">$${product.unit_price}</h4>
                     <ul class="product-supplier">
                         <li>Supplier:</li>
-                        <li><a href=${"/store?supplier=" + product.supplier_id}>${suppliersIndex.get(product.supplier_id).client_data.name}</a></li>
+                        <li><a href=${"/store?supplier=" + product.supplier_id}>${supplierName}</a></li>
                     </ul>
                     <div class="product-rating">
                         <i class="fa fa-star"></i>

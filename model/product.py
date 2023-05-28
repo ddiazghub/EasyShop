@@ -84,7 +84,26 @@ class Product(BaseModel):
             category=Category(result[8]),
             created_at=result[9]
         )
-    
+
+class ProductWithSupplier(Product):
+    supplier_name: str
+
+    @staticmethod
+    def parse(result: tuple) -> Product:
+        return ProductWithSupplier(
+            product_id=result[0],
+            name=result[1],
+            description=result[2],
+            image_url=result[3],
+            stock=result[4],
+            total_purchases=result[5],
+            unit_price=result[6],
+            supplier_id=result[7],
+            category=Category(result[8]),
+            created_at=result[9],
+            supplier_name=result[10]
+        )
+ 
 class StockModification(BaseModel):
     product_id: int
     stock: int

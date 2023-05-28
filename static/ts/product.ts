@@ -10,7 +10,7 @@ const modalBody = document.getElementById("modal-body")! as HTMLDivElement;
 
 let ownsProduct: boolean;
 
-window.addEventListener("DOMContentLoaded", () => {
+window.addEventListener("DOMContentLoaded", async () => {
     const amount = Cart.get().getAmount(product);
 
     if (amount)

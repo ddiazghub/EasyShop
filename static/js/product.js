@@ -6,7 +6,7 @@ const addToCartButton = document.getElementById("add-to-cart-btn");
 const showModal = document.getElementById("show-modal-btn");
 const modalBody = document.getElementById("modal-body");
 let ownsProduct;
-window.addEventListener("DOMContentLoaded", () => {
+window.addEventListener("DOMContentLoaded", async () => {
     const amount = Cart.get().getAmount(product);
     if (amount)
         reduceMax(amount);

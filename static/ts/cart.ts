@@ -27,7 +27,8 @@ class Cart {
     add(product: Product, amount: number) {
         if (amount == 0)
             return;
-        
+       
+        enableCheckout();
         const order = this.getSupplierOrder(product.supplier_id);
         const entry = order.get(product.product_id);
 
@@ -74,6 +75,9 @@ class Cart {
                 this.render();
                 console.log("Removed items from cart, new state: ", this.cart);
                 this.save();
+
+                if (this.size === 0)
+                    disableCheckout();
             }
         }
     }
@@ -137,7 +141,7 @@ class Cart {
                     <h3 class="product-name"><a href="/product?product_id=${product.product_id}">${product.name}</a></h3>
                     <h4 class="product-price"><span class="qty" id="product-${product.product_id}-amount">${amount}x</span>$${product.unit_price}</h4>
                 </div>
-                <button class="delete" onclick="Cart.get().remove(${product.product_id})"><i class="fa fa-close"></i></button>
+                <button class="delete" onclick="Cart.get().remove({product_id: ${product.product_id}, supplier_id: ${product.supplier_id}})"><i class="fa fa-close"></i></button>
             </div>
         `;
     }
