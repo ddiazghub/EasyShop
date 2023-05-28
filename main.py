@@ -6,11 +6,10 @@ from db.create_db import create_database
 from docs import API_DESCRIPTION
 from controllers.api_controller import router as api
 from controllers.client_controller import router as client
+from model.error import UNAUTHORIZED
 
 import logging
 import json
-
-from model.error import UNAUTHORIZED
 
 """Checks if database exists on startup and creates it if doesn't"""
 @asynccontextmanager
