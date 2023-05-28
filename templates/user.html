@@ -1,0 +1,56 @@
+{% extends "layout.html" %}
+{% block head %}
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+{% endblock %}
+{% block body %}
+    {{ breadcrumb("User Profile") }}
+
+    <!-- SECTION -->
+    <div class="section">
+        <!-- container -->
+        <div class="container">
+            <!-- row -->
+            <div class="row">
+                <!-- User Details -->
+                <div class="col-lg-6">
+                    <div class="user-profile">
+                        <div class="profile-info">
+                            <h3 class="profile-name">John Doe</h3>
+                            <div class="profile-email">johndoe@example.com</div>
+                            <div class="profile-address">123 Main St, City, State, ZIP</div>
+                            <!-- Add any additional user information here -->
+                        </div>
+                    </div>
+                </div>
+                <!-- /User Details -->
+                <!-- Profile Picture -->
+                <div class="col-lg-6">
+                    <div class="user-profile">
+                        <div class="profile-picture">
+                            <img src="/static/img/logo.png" alt="Profile Picture">
+                        </div>
+                    </div>
+                </div>
+                <!-- /Profile Picture -->
+            </div>
+            <!-- /row -->
+            
+            <!-- Action Buttons -->
+            <div class="row">
+                <div class="col-lg-6 offset-lg-3">
+                    <div class="profile-actions">
+                        <a href="/orders" class="btn btn-primary">Order History</a>
+                        <a href="/" class="btn btn-secondary">Logout</a>
+                    </div>
+                </div>
+            </div>
+            <!-- /Action Buttons -->
+            
+        </div>
+        <!-- /container -->
+    </div>
+    <!-- /SECTION -->
+{% endblock %}
+
+
+

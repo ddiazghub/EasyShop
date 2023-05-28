@@ -45,3 +45,11 @@ async def create_product(request: Request) -> HTMLResponse:
 @router.get("/mystore")
 async def store(request: Request) -> HTMLResponse:
     return templates.TemplateResponse("store.html", {"request": request, "categories": Category, "current": FakeCategory("My Store", -1), "supplier": -1})
+
+@router.get("/user")
+async def create_product(request: Request) -> HTMLResponse:
+    return templates.TemplateResponse("user.html", {"request": request, "categories": Category})
+
+@router.get("/orders")
+async def create_product(request: Request) -> HTMLResponse:
+    return templates.TemplateResponse("orders.html", {"request": request, "categories": Category})
