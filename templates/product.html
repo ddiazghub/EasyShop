@@ -41,6 +41,7 @@
                 <div class="col-md-5">
                     <div class="product-details">
                         <h2 class="product-name">{{ product.name }}</h2>
+
                         <div>
                             <div class="product-rating">
                                 <i class="fa fa-star"></i>
@@ -51,6 +52,7 @@
                             </div>
                             <a class="review-link" href="#">10 Review(s) | Add your review</a>
                         </div>
+
                         <div>
                             <h3 class="product-price">${{ product.unit_price }}</h3>
                             <span class="product-available" id="product-stock">
@@ -61,8 +63,16 @@
                                 {% endif %}
                             </span>
                         </div>
-                        <p>{{ product.description }}</p>
 
+                        <ul class="product-supplier">
+                            <li>Supplier:</li>
+                            <li><a href={{ "/store?supplier=" + product.supplier_id|string }}>{{ supplier.client_data.name }}</a></li>
+                        </ul>
+
+                        <div>
+                            <p>{{ product.description }}</p>
+                        </div>
+                        
                         <div class="add-to-cart">
                             <div class="qty-label">
                                 Quantity
@@ -316,6 +326,7 @@
     
     <script>
         const product = {{ product_json|safe }};
+        const supplier = {{ supplier_json|safe }};
         const related = {{ related|safe }};
     </script>
     <script src="js/product.js"></script>

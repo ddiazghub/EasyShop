@@ -7,10 +7,12 @@ const topWidgetContainer = document.getElementById("top-selling-widget")! as HTM
 const bestWidgetContainer = document.getElementById("best-rated-widget")! as HTMLDivElement;
 let popular: Product[] = [];
 
-window.addEventListener("DOMContentLoaded", getIndexProducts);
+window.addEventListener("DOMContentLoaded", initializeIndex);
 
-async function getIndexProducts() {
+async function initializeIndex() {
+    const promise = getSuppliers();
     await getProducts(SortBy.Latest);
+    await promise;
     renderIndexProducts();
 }
 
@@ -34,6 +36,7 @@ function renderIndexProducts() {
 
     newContainer.innerHTML = newest.map(product => renderProduct(product)).join("\n");
     topContainer.innerHTML = mostPopular.map(product => renderProduct(product)).join("\n");
+
     renderWidgets(newWidgetContainer, newest);
     renderWidgets(topWidgetContainer, mostPopular);
     renderWidgets(bestWidgetContainer, newest);

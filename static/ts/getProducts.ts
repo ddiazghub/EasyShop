@@ -21,6 +21,10 @@ function renderProduct(product: Product, width: number = 4) {
                     <p class="product-category">${Category[product.category]}</p>
                     <h3 class="product-name"><a href="${productUrl}">${product.name}</a></h3>
                     <h4 class="product-price">$${product.unit_price}</h4>
+                    <ul class="product-supplier">
+                        <li>Supplier:</li>
+                        <li><a href=${"/store?supplier=" + product.supplier_id}>${suppliersIndex.get(product.supplier_id)!.client_data.name}</a></li>
+                    </ul>
                     <div class="product-rating">
                         <i class="fa fa-star"></i>
                         <i class="fa fa-star"></i>
@@ -57,6 +61,10 @@ function renderProductWidget(product: Product): string {
             <div class="product-body">
                 <p class="product-category">${Category[product.category]}</p>
                 <h3 class="product-name"><a href="${productUrl}">${product.name}</a></h3>
+                <ul class="product-supplier">
+                    <li>Supplier:</li>
+                    <li><a href=${"/store?supplier=" + product.supplier_id}>${suppliersIndex.get(product.supplier_id)!.client_data.name}</a></li>
+                </ul>
                 <h4 class="product-price">$${product.unit_price}</h4>
             </div>
         </div>

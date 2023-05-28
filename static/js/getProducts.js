@@ -1,23 +1,11 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 let products = [];
-function getProducts(sortBy, supplierId = null) {
-    return __awaiter(this, void 0, void 0, function* () {
-        products = yield Api.get(`/api/product${supplierId ? "/supplier/" + supplierId : ""}?sort_by=${sortBy}`);
-    });
+async function getProducts(sortBy, supplierId = null) {
+    products = await Api.get(`/api/product${supplierId ? "/supplier/" + supplierId : ""}?sort_by=${sortBy}`);
 }
 function renderProduct(product, width = 4) {
-    var _a;
     const productUrl = `/product?product_id=${product.product_id}`;
-    const clientId = (_a = Session.get().getUser()) === null || _a === void 0 ? void 0 : _a.client_data.client_id;
+    const clientId = Session.get().getUser()?.client_data.client_id;
     return `
         <!-- product -->
         <div class="col-md-${width} col-xs-6">
@@ -31,6 +19,10 @@ function renderProduct(product, width = 4) {
                     <p class="product-category">${Category[product.category]}</p>
                     <h3 class="product-name"><a href="${productUrl}">${product.name}</a></h3>
                     <h4 class="product-price">$${product.unit_price}</h4>
+                    <ul class="product-supplier">
+                        <li>Supplier:</li>
+                        <li><a href=${"/store?supplier=" + product.supplier_id}>${suppliersIndex.get(product.supplier_id).client_data.name}</a></li>
+                    </ul>
                     <div class="product-rating">
                         <i class="fa fa-star"></i>
                         <i class="fa fa-star"></i>
@@ -65,6 +57,10 @@ function renderProductWidget(product) {
             <div class="product-body">
                 <p class="product-category">${Category[product.category]}</p>
                 <h3 class="product-name"><a href="${productUrl}">${product.name}</a></h3>
+                <ul class="product-supplier">
+                    <li>Supplier:</li>
+                    <li><a href=${"/store?supplier=" + product.supplier_id}>${suppliersIndex.get(product.supplier_id).client_data.name}</a></li>
+                </ul>
                 <h4 class="product-price">$${product.unit_price}</h4>
             </div>
         </div>
