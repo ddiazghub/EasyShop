@@ -56,6 +56,26 @@ def get_by_username(username: str) -> User:
     
     return database.transaction(user_get)
 
+def get_suppliers() -> User:
+    def user_get(cursor: Cursor) -> User:
+        query = """
+            SELECT u.user_id, u.username, u.client_id, c.client_name, c.email, c.phone_number, c.billing_address
+            FROM "ClientUser" AS c
+            JOIN (
+                SELECT c.client_id, SUM(po.amount) AS total_sales
+                FROM "Order" AS o
+                JOIN "ProductOrder" AS po ON o.order_id = po.order_id
+                RIGHT JOIN "ClientUser" AS c ON c.client_id = o.supplier_id
+                GROUP BY c.client_id
+                ORDER BY total_sales DESC
+            ) AS top_selling ON c.client_id = top_selling.client_id
+            JOIN "User" AS u ON u.client_id = c.client_id;
+        """
+        
+        return [User.parse(record) for record in cursor.execute(query)]
+    
+    return database.transaction(user_get)
+
 def get_by_username_with_password(username: str) -> tuple[User, str]:
     def user_get(cursor: Cursor) -> tuple[User, str]:
         query = """
@@ -148,8 +168,6 @@ def delete(user_id: int) -> None:
             raise NOT_FOUND
     
     database.transaction(user_delete)
-
-
 
 def create_token(payload: TokenPayload) -> Token:
     data = payload.copy()

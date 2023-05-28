@@ -2481,3 +2481,17 @@ textarea.description-input {
   opacity: 1;
   visibility: visible;
 }
+
+.product-supplier {
+  margin-bottom: 10px;
+}
+
+.product-supplier li {
+  display: inline-block;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+
+.product-supplier li+li {
+  margin-left: 10px;
+}

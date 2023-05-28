@@ -18,6 +18,10 @@ router = APIRouter(
 async def get_all_users() -> list[User]:
     return user_service.get_all()
 
+@router.get("/suppliers")
+async def get_suppliers() -> list[User]:
+    return user_service.get_suppliers()
+
 @router.get("/{user_id}")
 async def get_by_id(user_id: int) -> User:
     return user_service.get_by_id(user_id)

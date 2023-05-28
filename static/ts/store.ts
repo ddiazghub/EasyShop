@@ -48,6 +48,8 @@ for (const checkbox of categoryCheckboxes) {
 }
 
 async function getStoreProducts() {
+    const promise = getSuppliers();
+
     if (supplier) {
         let supplierId: number;
 
@@ -68,6 +70,7 @@ async function getStoreProducts() {
         await getProducts(sortBySelect.value as SortBy);
     }
 
+    await promise;
     renderProducts();
 }
 
