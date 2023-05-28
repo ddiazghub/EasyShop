@@ -2537,3 +2537,7 @@ textarea.description-input {
 .user-profile-img {
   max-height: 300px;
 }
+
+.table-separator {
+  background-color: #a5967a;
+}

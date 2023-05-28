@@ -1,5 +1,6 @@
+from helpers import group_by
 from model.error import NOT_FOUND, INSUFFICIENT_STOCK
-from model.order import Order, OrderCreation, OrderState, StateUpdate
+from model.order import Order, OrderCreation, OrderState, OrderWithProducts, ProductOrderWithProduct, StateUpdate
 from psycopg import Cursor
 from psycopg.errors import CheckViolation
 from db import database
@@ -7,13 +8,29 @@ from typing import Sequence
 
 order_id: int
 
-def get_where(cursor: Cursor, where_clause: str, params: Sequence) -> list[Order]:
-    records: dict[int, tuple] = {record[0]: record for record in cursor.execute(f"SELECT * FROM \"Order\" WHERE {where_clause}", params)}
-    order_ids: list[int] = [order_id for order_id in records.keys()]
-    placeholder = ", ".join("%s" for _ in order_ids)
-    updates = (StateUpdate.parse(record) for record in cursor.execute(f"SELECT * FROM \"OrderStateUpdate\" WHERE order_id IN ({placeholder})", order_ids))
+def get_where(cursor: Cursor, where_clause: str, params: Sequence) -> list[OrderWithProducts]:
+    where_clause = f"WHERE {where_clause}" if where_clause else ""
 
-    return [Order.parse(records[update.order_id], update) for update in updates]
+    query = f"""
+        SELECT p.*, po.amount, po.order_id
+        FROM "Order" AS o
+        JOIN "ProductOrder" AS po ON po.order_id = o.order_id
+        JOIN "Product" AS p ON p.product_id = po.product_id
+        {where_clause}
+    """
+    order_products: dict[int, list[ProductOrderWithProduct]] = group_by(
+        cursor.execute(query, params),
+        lambda record: record[-1],
+        lambda record: ProductOrderWithProduct.parse(record)
+    )
+    
+    query = f"""
+        SELECT *
+        FROM "Order" AS o
+        {where_clause}
+    """
+
+    return [OrderWithProducts.parse(record, order_products[record[0]]) for record in cursor.execute(query, params)]
 
 def get_all() -> list[Order]:
     def order_get(cursor: Cursor) -> list[Order]:
@@ -32,15 +49,21 @@ def get_by_id(order_id: int) -> Order:
     
     return database.transaction(order_get)
 
-def get_by_client(client_id: int) -> list[Order]:
-    def order_get(cursor: Cursor) -> list[Order]:
-        return [Order.parse(record) for record in cursor.execute("SELECT * FROM \"Order\" WHERE client_id = %s", [client_id])]
+def get_by_client(client_id: int) -> list[OrderWithProducts]:
+    def order_get(cursor: Cursor) -> list[OrderWithProducts]:
+        return get_where(cursor, "o.client_id = %s", [client_id])
 
     return database.transaction(order_get)
 
-def get_by_supplier(supplier_id: int) -> list[Order]:
-    def order_get(cursor: Cursor) -> list[Order]:
-        return [Order.parse(record) for record in cursor.execute("SELECT * FROM \"Order\" WHERE supplier_id = %s", [supplier_id])]
+def get_by_supplier(supplier_id: int) -> list[OrderWithProducts]:
+    def order_get(cursor: Cursor) -> list[OrderWithProducts]:
+        return get_where(cursor, "o.supplier_id = %s", [supplier_id])
+    
+    return database.transaction(order_get)
+
+def get_by_client_and_supplier(client_id: int, supplier_id: int) -> list[OrderWithProducts]:
+    def order_get(cursor: Cursor) -> list[OrderWithProducts]:
+        return get_where(cursor, "o.client_id = %s AND o.supplier_id = %s", [client_id, supplier_id])
 
     return database.transaction(order_get)
 

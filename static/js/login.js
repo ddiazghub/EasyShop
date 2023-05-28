@@ -1,4 +1,6 @@
 "use strict";
+const accountText = document.getElementById("account-text");
+const accountButton = document.getElementById("account-button");
 class Session {
     static instance;
     session = null;
@@ -57,7 +59,7 @@ class Session {
     load() {
         const sess = window.localStorage.getItem("session");
         if (!sess) {
-            document.getElementById("account-text").innerText = "Sign Up";
+            accountText.innerText = "Sign Up";
             return;
         }
         this.session = JSON.parse(sess);
@@ -70,7 +72,8 @@ class Session {
             }
             else {
                 console.log("Loaded session from localstorage: ", this.session);
-                document.getElementById("account-text").innerText = "My Account";
+                accountText.innerText = "My Account";
+                accountButton.href = `/user?user_id=${this.session.user.user_id}`;
             }
         }
     }
@@ -82,7 +85,8 @@ class Session {
     }
     kill(redirect = true) {
         this.session = null;
-        document.getElementById("account-text").innerText = "Sign Up";
+        accountText.innerText = "Sign Up";
+        accountButton.href = "/login";
         window.localStorage.removeItem("session");
         if (redirect)
             location.href = "/login";

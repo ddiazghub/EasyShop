@@ -1,3 +1,6 @@
+const accountText = document.getElementById("account-text")! as HTMLSpanElement;
+const accountButton = document.getElementById("account-button")! as HTMLAnchorElement;
+
 class Session {
     static instance: Session;
     session: UserWithToken | null = null;
@@ -64,7 +67,7 @@ class Session {
         const sess = window.localStorage.getItem("session");
 
         if (!sess) {
-            document.getElementById("account-text")!.innerText = "Sign Up";
+            accountText.innerText = "Sign Up";
             return;
         }
 
@@ -79,7 +82,8 @@ class Session {
                 this.kill(false);
             } else {
                 console.log("Loaded session from localstorage: ", this.session);
-                document.getElementById("account-text")!.innerText = "My Account";
+                accountText.innerText = "My Account";
+                accountButton.href = `/user?user_id=${this.session.user.user_id}`;
             }
         }
     }
@@ -94,7 +98,8 @@ class Session {
 
     kill(redirect: boolean = true) {
         this.session = null;
-        document.getElementById("account-text")!.innerText = "Sign Up";
+        accountText.innerText = "Sign Up";
+        accountButton.href = "/login";
         window.localStorage.removeItem("session");
 
         if (redirect)

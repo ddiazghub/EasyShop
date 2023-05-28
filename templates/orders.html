@@ -3,24 +3,51 @@
 {% block body %}
     <div class="section">
         <div class="container">
-            <h2>Order History</h2>
+            <h2>
+                {% if client and supplier %}
+                    {{ "My Orders For " + clients[supplier][0].client_data.name }}
+                {% else %}
+                    {% if client %}
+                        Order History
+                    {% else %}
+                        Received Order History
+                    {% endif %}
+                {% endif %}
+            </h2>
             <table class="table">
                 <thead>
                     <tr>
                         <th>Order ID</th>
+                        <th>{{ "Supplier"|safe if client else "Client" }}</th>
                         <th>Product</th>
                         <th>Quantity</th>
+                        <th>Unit Price</th>
                         <th>Date</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for order in orders %}
-                        <tr>
-                            <td>{{ order.order_id }}</td>
-                            <td>{{ order.product }}</td>
-                            <td>{{ order.quantity }}</td>
-                            <td>{{ order.date }}</td>
-                        </tr>
+                        {% set other = order.supplier_id if client else order.client_id %}
+                        {% set other_name = clients[other][0].client_data.name %}
+                        {% set other_url = "/user?user_id=" + other|string %}
+
+                        {% for product in order.products %}
+                            {% if loop.index == 1 %}
+                                <tr style="border-bottom:1px solid black" class="table-separator">
+                                    <td colspan="100%">
+                                        <div class="table-separator"></div>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                            <tr>
+                                <td>{{ order.order_id }}</td>
+                                <td><a href={{ other_url }}>{{ other_name }}</td>
+                                <td><a href={{ "/product?product_id=" + product.product.product_id|string }}>{{ product.product.name }}</a></td>
+                                <td>{{ product.amount }}</td>
+                                <td>{{ product.product.unit_price }}</td>
+                                <td>{{ order.purchase_date }}</td>
+                            </tr>
+                        {% endfor %}
                     {% endfor %}
                 </tbody>
             </table>
