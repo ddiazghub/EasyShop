@@ -22,7 +22,7 @@ def get_where(where_clause: str | None = None, params: tuple | list = [], sort_b
                 where += f"AND {where_search}"
         
         query = f"SELECT * FROM \"Product\" {where} {order_by} {lim}"
-        print(query, par)
+        
         return [Product.parse(record) for record in cursor.execute(query, par)] 
     
     return database.transaction(product_get)
