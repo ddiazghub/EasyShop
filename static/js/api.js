@@ -12,7 +12,8 @@ class Api {
     static async handleStatus(response) {
         switch (response.status) {
             case 401:
-                Session.get().kill();
+                const url = new URL(location.href);
+                Session.get().kill(url.pathname != "/login");
                 throw await response.json();
             default:
                 if (!response.ok)

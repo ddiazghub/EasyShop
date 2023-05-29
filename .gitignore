@@ -173,10 +173,10 @@ pip-selfcheck.json
 *.zip
 .vscode
 database.sql
-static/img/*
+#static/img/*
 static/screenshot
-!static/img/shop*
-!static/img/prod*
-!static/img/logo*
-!static/img/fallback*
-!static/img/hotdeal*
+#!static/img/shop*
+#!static/img/prod*
+#!static/img/logo*
+#!static/img/fallback*
+#!static/img/hotdeal*

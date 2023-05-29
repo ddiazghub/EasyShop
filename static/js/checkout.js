@@ -30,11 +30,12 @@ window.addEventListener("DOMContentLoaded", () => {
 async function checkout() {
     const session = Session.get();
     let user = session.getUser();
+    const cart = Cart.get();
     if (!user) {
         await session.register(false);
         user = session.getUser();
     }
-    for (const [supplierId, supplierOrder] of Cart.get().cart) {
+    for (const [supplierId, supplierOrder] of cart.cart) {
         const products = [...supplierOrder.values()];
         const order = {
             client_id: user.client_data.client_id,
@@ -49,7 +50,8 @@ async function checkout() {
         const response = await Api.post("/api/order", order);
         console.log("Created order: ", response);
     }
-    alert("Order created");
+    cart.clear();
+    location.href = `/orders?client=${user.client_data.client_id}`;
 }
 function unregistered() {
     return `

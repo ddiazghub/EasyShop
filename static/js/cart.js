@@ -48,6 +48,11 @@ class Cart {
     isEmpty() {
         return this.cart.size === 0;
     }
+    clear() {
+        this.cart.clear();
+        this.save();
+        this.render();
+    }
     remove(product) {
         if (this.cart.has(product.supplier_id)) {
             const order = this.cart.get(product.supplier_id);
